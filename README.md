@@ -1,20 +1,10 @@
-# Quiz-Scheduler
-Building a web app for faculty to effortlessly schedule quizzes, specifying time, venue, and details. Simplified the process for both faculty and students.
+# LNMIIT Quiz Scheduler Overview
 
-   ~ Faculty: Intuitive interface to create, schedule, and manage quizzes, including time and venue.
-   
-   ~ Students: Clear, centralized view of upcoming quizzes with time, venue, and course details, minimizing confusion.
-   
-   ~ Improved efficiency: Reduced faculty workload with automated reminders and streamlined scheduling.
-   
-   ~ Enhanced communication: Ensured students are informed and prepared with clear quiz details.
-   
-   ~ Technical skills: (JavaScript, ReactJS, nodeJS, mongoDB).
+- **LNMIIT Quiz Scheduler**: A user-friendly quiz management app where faculty can effortlessly create, update, delete, and schedule quizzes. The platform offers an intuitive way to efficiently organize quizzes. Faculty members have seamless access to all necessary tools for quiz management. Students can easily view and track scheduled quizzes for their batch subjects, including session locations.
 
-Key improvements:
+**Key Features and Improvements:**
 
-   ~ Tailored to faculty needs: Focuses on simplifying their quiz scheduling process.
-   
-   ~ Quantifiable benefit: Reduced faculty workload.
-   
-   ~ Clear student impact: Increased clarity and communication for students.
+- Tailored to faculty needs with a focus on simplifying the quiz scheduling process.
+- Utilizes JavaScript, ReactJS, Node.js, MongoDB for robust functionality.
+- Quantifiable benefit: Reduced workload and enhanced clarity for faculty.
+- Ensures clear communication and preparation for students.
