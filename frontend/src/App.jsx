@@ -3,12 +3,14 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 import Layout from './Layout';
 import Home from './components/Home';
 import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Layout />} >,
         <Route path="" element={<Home />} />
         <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
       </Route>
     )
 );

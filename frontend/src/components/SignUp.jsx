@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function SignIn() {
+function SignUp() {
     const [role, setRole] = useState('Student');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,11 +20,11 @@ function SignIn() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // add authentication logic here
+        // add sign-up logic here
         console.log('Role:', role);
         console.log('Email:', email);
         console.log('Password:', password);
-        // redirect after successful sign-in
+        // redirect after successful sign-up
     };
 
     return (
@@ -45,7 +45,7 @@ function SignIn() {
                         ></path>
                     </svg>
                     <h2 className="text-2xl font-bold leading-tight text-gray-900 mb-4">
-                        Sign In
+                        Sign Up
                     </h2>
                     <form onSubmit={handleSubmit} className="w-full max-w-sm">
                         <div className="space-y-4">
@@ -61,7 +61,7 @@ function SignIn() {
                                         id="role"
                                         value={role}
                                         onChange={handleRoleChange}
-                                        className="w-full h-10 px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
+                                        className="w-full h-10 px-3 py-2 text-sm placeholder-gray-400 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
                                     >
                                         <option value="Student">Student</option>
                                         <option value="Faculty">Faculty</option>
@@ -104,48 +104,38 @@ function SignIn() {
                                     />
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between">
-                                <div className="text-sm">
-                                    <Link
-                                        to="/forgot-password"
-                                        className="font-medium text-gray-900 hover:underline"
+                            <div>
+                                <button
+                                    type="submit"
+                                    className="w-full h-10 flex items-center justify-center rounded-md bg-gradient-to-br from-purple-700 to-blue-700 text-white px-3.5 py-2.5 font-semibold leading-7 hover:opacity-90"
+                                >
+                                    Sign Up{' '}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="ml-2"
                                     >
-                                        Forgot password?
-                                    </Link>
-                                </div>
-                                <div>
-                                    <button
-                                        type="submit"
-                                        className="w-full h-10 flex items-center justify-center rounded-md bg-gradient-to-br from-purple-700 to-blue-700 text-white px-3.5 py-2.5 font-semibold leading-7 hover:opacity-90"
-                                    >
-                                        Sign In{' '}
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="16"
-                                            height="16"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            className="ml-2"
-                                        >
-                                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                                            <polyline points="12 5 19 12 12 19"></polyline>
-                                        </svg>
-                                    </button>
-                                </div>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        <polyline points="12 5 19 12 12 19"></polyline>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </form>
                     <p className="mt-4 text-sm text-gray-900">
-                        Don't have an account?{' '}
+                        Already have an account?{' '}
                         <Link
-                            to="/sign-up"
+                            to="/sign-in"
                             className="font-semibold text-purple-800 hover:underline"
                         >
-                            Sign Up
+                            Sign In
                         </Link>
                     </p>
                 </div>
@@ -154,4 +144,4 @@ function SignIn() {
     );
 }
 
-export default SignIn;
+export default SignUp;
