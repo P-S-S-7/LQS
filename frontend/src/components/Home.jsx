@@ -22,7 +22,7 @@ function Home() {
                 </Link>
             </div>
             <footer className="text-center text-gray-300 py-2">
-                @created by - pss
+                @created by ~pss
             </footer>
         </section>
     );

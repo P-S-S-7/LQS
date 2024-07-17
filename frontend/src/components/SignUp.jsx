@@ -5,9 +5,19 @@ function SignUp() {
     const [role, setRole] = useState('Student');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [branch, setBranch] = useState('CSE');
+    const [department, setDepartment] = useState('Computer Science'); 
 
     const handleRoleChange = (e) => {
-        setRole(e.target.value);
+        const selectedRole = e.target.value;
+        setRole(selectedRole);
+        setEmail('');
+        setPassword('');
+        if (selectedRole === 'Student') {
+            setBranch('CSE');
+        } else {
+            setDepartment('Computer Science');
+        }
     };
 
     const handleEmailChange = (e) => {
@@ -18,17 +28,30 @@ function SignUp() {
         setPassword(e.target.value);
     };
 
+    const handleBranchChange = (e) => {
+        setBranch(e.target.value);
+    };
+
+    const handleDepartmentChange = (e) => {
+        setDepartment(e.target.value);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         // add sign-up logic here
         console.log('Role:', role);
         console.log('Email:', email);
         console.log('Password:', password);
+        if (role === 'Student') {
+            console.log('Branch:', branch);
+        } else {
+            console.log('Department:', department);
+        }
         // redirect after successful sign-up
     };
 
     return (
-        <section className="flex items-center justify-center bg-gradient-to-br from-purple-400 to-blue-400">
+        <section className="flex items-center justify-center bg-gradient-to-br from-purple-400 to-blue-400 min-h-screen">
             <div className="bg-gradient-to-br from-purple-400 to-blue-400 px-4 py-10 sm:px-6 sm:py-16 lg:px-8 xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md rounded-md shadow-lg">
                 <div className="flex flex-col items-center">
                     <svg
@@ -68,6 +91,54 @@ function SignUp() {
                                     </select>
                                 </div>
                             </div>
+                            {role === 'Student' ? (
+                                <div>
+                                    <label
+                                        htmlFor="branch"
+                                        className="text-base font-medium text-gray-900"
+                                    >
+                                        Select Branch
+                                    </label>
+                                    <div>
+                                        <select
+                                            id="branch"
+                                            value={branch}
+                                            onChange={handleBranchChange}
+                                            className="w-full h-10 px-3 py-2 text-sm placeholder-gray-400 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
+                                        >
+                                            <option value="CSE">Computer Science and Engineering</option>
+                                            <option value="ECE">Electronics and Communication Engineering</option>
+                                            <option value="MME">Mechanical- Mechatronics Engineering</option>
+                                            <option value="CCE">Communication and Computer Engineering</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div>
+                                    <label
+                                        htmlFor="department"
+                                        className="text-base font-medium text-gray-900"
+                                    >
+                                        Select Department
+                                    </label>
+                                    <div>
+                                        <select
+                                            id="department"
+                                            value={department}
+                                            onChange={handleDepartmentChange}
+                                            className="w-full h-10 px-3 py-2 text-sm placeholder-gray-400 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
+                                        >
+                                            <option value="Communication and Computer Engineering">Communication and Computer Engineering</option>
+                                            <option value="Computer Science and Engineering">Computer Science and Engineering</option>
+                                            <option value="Mechanical- Mechatronics Engineering">Mechanical- Mechatronics Engineering</option>
+                                            <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
+                                            <option value="Humanities and Social Sciences">Humanities and Social Sciences</option>
+                                            <option value="Physics">Physics</option>
+                                            <option value="Mathematics">Mathematics</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            )}
                             <div>
                                 <label
                                     htmlFor="email"
@@ -104,7 +175,7 @@ function SignUp() {
                                     />
                                 </div>
                             </div>
-                            <div>
+                            <div className="flex items-center justify-between">
                                 <button
                                     type="submit"
                                     className="w-full h-10 flex items-center justify-center rounded-md bg-gradient-to-br from-purple-700 to-blue-700 text-white px-3.5 py-2.5 font-semibold leading-7 hover:opacity-90"
@@ -113,29 +184,27 @@ function SignUp() {
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="ml-2"
+                                        height="currentColor"
+                                        viewBox="0 0 16 16"
+                                        fill="currentColor"
+                                        className="ml-1"
                                     >
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                        <polyline points="12 5 19 12 12 19"></polyline>
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M6.94.47a.75.75 0 0 1 .75 0l6.5 3.5a.75.75 0 0 1 0 1.06l-6.5 3.5a.75.75 0 0 1-.75 0l-6.5-3.5a.75.75 0 0 1 0-1.06l6.5-3.5zM8 4.32L2.56 7.5 8 10.68l5.44-3.18L8 4.32z"
+                                        ></path>
                                     </svg>
                                 </button>
                             </div>
                         </div>
                     </form>
-                    <p className="mt-4 text-sm text-gray-900">
+                    <p className="text-sm text-gray-600 mt-4">
                         Already have an account?{' '}
                         <Link
                             to="/sign-in"
-                            className="font-semibold text-purple-800 hover:underline"
+                            className="font-medium text-purple-700 hover:text-purple-800"
                         >
-                            Sign In
+                            Sign in here
                         </Link>
                     </p>
                 </div>
