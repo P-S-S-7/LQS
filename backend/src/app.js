@@ -11,10 +11,14 @@ app.use(cors(
     }
 ));
 
-app.use(express.json({ limit: "16kb" })); // our app now accepts JSON data in the body of the request - body-parser is now included in express (Middleware function)
+app.use(express.json({ limit: "16kb" })); // body-parser (Middleware to parse JSON data)
+app.use(express.urlencoded({ extended: true, limit: "16kb" })); // body-parser (Middleware to parse URL-encoded data)
+app.use(cookieParser()); // cookie-parser (Middleware to parse cookies)
 
-app.use(express.urlencoded({ extended: true, limit: "16kb" })); // our app now handles URL encoded data - body-parser is now included in express (Middleware function)
+// import routes
+import userRouter from './routes/user.routes.js';
 
-app.use(cookieParser()); // our app now uses cookie-parser to parse cookies in the request headers
+// routes declaration
+app.use('/api/v1/users', userRouter);
 
-export {app};
+export { app };

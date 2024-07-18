@@ -1,10 +1,12 @@
-import mongoose from 'mongoose';
-import {User} from './user.model.js';
-const facultySchema = new mongoose.Schema({
-    department: {
-        type: String,
-        required: [true, "Department is required"],
-    },
-});
+import mongoose, { Schema } from "mongoose";
 
-export const Faculty = User.discriminator('Faculty', facultySchema);
+const facultySchema = new Schema(
+    {
+        department: {
+            type: String,
+            required: [true, "Department is required"],
+        },
+    }
+);
+
+export const Faculty = mongoose.model('Faculty', facultySchema);

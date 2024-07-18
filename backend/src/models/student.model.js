@@ -1,11 +1,13 @@
-import mongoose from 'mongoose';
-import {User} from './user.model.js';
+import mongoose, { Schema } from "mongoose";
 
-const studentSchema = new mongoose.Schema({
-    branch: {
-        type: String,
-        required: [true, "Branch is required"],
-    },
-});
+const studentSchema = new Schema(
+    {
+        branch: {
+            type: String,
+            required: [true, "Branch is required"],
+        },
+    }
+);
 
-export const Student = User.discriminator('Student', studentSchema);
+export const Student = mongoose.model('Student', studentSchema);
+

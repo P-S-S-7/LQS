@@ -1,10 +1,8 @@
 import mongoose, { Schema } from 'mongoose';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const options = { discriminatorKey: 'role', collection: 'users' };
-
-const baseUserSchema = new Schema(
+const userSchema = new Schema(
     {
         email: {
             type: String,
@@ -12,45 +10,48 @@ const baseUserSchema = new Schema(
             unique: true,
             lowercase: true,
             trim: true,
+            index: true,
         },
         password: {
             type: String,
             required: [true, "Password is required"],
+        },
+        role: {
+            type: String,
+            required: [true, "Role is required"],
+            enum: ["student", "faculty"],
         },
         refreshToken: {
             type: String,
         },
     },
     {
-        timestamps: true 
-    },
-    options
+        timestamps: true,
+    }
 );
 
-baseUserSchema.pre("save", async function(next) { // mongoose middleware
+userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) {
-        return next();  
+        return next();
     }
     try {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
         next();
-    } catch (err) {
-        next(err);
+    } catch (error) {
+        next(error);
     }
 });
 
-baseUserSchema.methods.isPasswordCorrect = async function(password) { // mongoose custom method
+userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password);
 }
 
-baseUserSchema.methods.generateAccessToken = function() { // mongoose custom method
+userSchema.methods.generateAccessToken = function () {
     return jwt.sign(
         {
             id: this._id,
-            username: this.username,
             email: this.email,
-            fullname: this.fullname,
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
@@ -58,18 +59,17 @@ baseUserSchema.methods.generateAccessToken = function() { // mongoose custom met
         }
     )
 }
-baseUserSchema.methods.generateRefreshToken = function() { // mongoose custom method
-     return jwt.sign(
+
+userSchema.methods.generateRefreshToken = function () {
+    return jwt.sign(
         {
             id: this._id,
         },
-        process.env.REFRESH_TOKEN_SECRET, 
+        process.env.REFRESH_TOKEN_SECRET,
         {
             expiresIn: process.env.REFRESH_TOKEN_DURATION,
         }
     )
 }
 
-
-
-export const User = mongoose.model('User', baseUserSchema);
+export const User = mongoose.model('User', userSchema);
