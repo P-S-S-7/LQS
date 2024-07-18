@@ -13,7 +13,7 @@ function SignUp() {
         setRole(selectedRole);
         setEmail('');
         setPassword('');
-        if (selectedRole === 'Student') {
+        if (selectedRole === 'student') {
             setBranch('CSE');
         } else {
             setDepartment('Computer Science');
@@ -42,7 +42,7 @@ function SignUp() {
         console.log('Role:', role);
         console.log('Email:', email);
         console.log('Password:', password);
-        if (role === 'Student') {
+        if (role === 'student') {
             console.log('Branch:', branch);
         } else {
             console.log('Department:', department);
@@ -86,8 +86,8 @@ function SignUp() {
                                         onChange={handleRoleChange}
                                         className="w-full h-10 px-3 py-2 text-sm placeholder-gray-400 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
                                     >
-                                        <option value="Student">Student</option>
-                                        <option value="Faculty">Faculty</option>
+                                        <option value="student">Student</option>
+                                        <option value="faculty">Faculty</option>
                                     </select>
                                 </div>
                             </div>
@@ -128,13 +128,13 @@ function SignUp() {
                                             onChange={handleDepartmentChange}
                                             className="w-full h-10 px-3 py-2 text-sm placeholder-gray-400 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
                                         >
-                                            <option value="Communication and Computer Engineering">Communication and Computer Engineering</option>
-                                            <option value="Computer Science and Engineering">Computer Science and Engineering</option>
-                                            <option value="Mechanical- Mechatronics Engineering">Mechanical- Mechatronics Engineering</option>
-                                            <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
-                                            <option value="Humanities and Social Sciences">Humanities and Social Sciences</option>
-                                            <option value="Physics">Physics</option>
-                                            <option value="Mathematics">Mathematics</option>
+                                            <option value="CCE">Communication and Computer Engineering</option>
+                                            <option value="CSE">Computer Science and Engineering</option>
+                                            <option value="MME">Mechanical- Mechatronics Engineering</option>
+                                            <option value="ECE">Electronics and Communication Engineering</option>
+                                            <option value="HSS">Humanities and Social Sciences</option>
+                                            <option value="PHY">Physics</option>
+                                            <option value="MHT">Mathematics</option>
                                         </select>
                                     </div>
                                 </div>

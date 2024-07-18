@@ -5,6 +5,7 @@ const facultySchema = new Schema(
         department: {
             type: String,
             required: [true, "Department is required"],
+            enum: ["CSE", "CCE", "ECE", "MME", "PHY", "HSS", "MTH"],
         },
     }
 );

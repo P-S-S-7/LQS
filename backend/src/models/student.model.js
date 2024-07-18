@@ -5,6 +5,7 @@ const studentSchema = new Schema(
         branch: {
             type: String,
             required: [true, "Branch is required"],
+            enum: ["CSE", "CCE", "ECE", "MME"],
         },
     }
 );
