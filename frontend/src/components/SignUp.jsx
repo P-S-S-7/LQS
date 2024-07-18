@@ -201,10 +201,10 @@ function SignUp() {
                     <p className="text-sm text-gray-600 mt-4">
                         Already have an account?{' '}
                         <Link
-                            to="/sign-in"
+                            to="/login"
                             className="font-medium text-purple-700 hover:text-purple-800"
                         >
-                            Sign in here
+                            Login here
                         </Link>
                     </p>
                 </div>

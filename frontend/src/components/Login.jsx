@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function SignIn() {
+function Login() {
     const [role, setRole] = useState('Student');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -24,7 +24,7 @@ function SignIn() {
         console.log('Role:', role);
         console.log('Email:', email);
         console.log('Password:', password);
-        // redirect after successful sign-in
+        // redirect after successful login
     };
 
     return (
@@ -45,7 +45,7 @@ function SignIn() {
                         ></path>
                     </svg>
                     <h2 className="text-2xl font-bold leading-tight text-gray-800 mb-4">
-                        Sign In
+                        Login
                     </h2>
                     <form onSubmit={handleSubmit} className="w-full max-w-sm">
                         <div className="space-y-4">
@@ -118,7 +118,7 @@ function SignIn() {
                                         type="submit"
                                         className="w-full h-10 flex items-center justify-center rounded-md bg-gradient-to-br from-purple-700 to-blue-700 text-white px-3.5 py-2.5 font-semibold leading-7 hover:opacity-90"
                                     >
-                                        Sign In{' '}
+                                        Login{' '}
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             width="16"
@@ -154,4 +154,4 @@ function SignIn() {
     );
 }
 
-export default SignIn;
+export default Login;

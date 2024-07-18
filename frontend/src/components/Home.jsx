@@ -15,7 +15,7 @@ function Home() {
                     className="rounded-full h-32 w-32 md:h-40 md:w-40 object-cover mb-4"
                 />
                 <Link
-                    to="/sign-in"
+                    to="/login"
                     className="bg-gradient-to-br from-purple-700 to-blue-500 text-gray-800 py-2 px-6 rounded-lg shadow-md transition duration-300 text-sm md:text-base"
                 >
                    <strong>GET STARTED</strong> 

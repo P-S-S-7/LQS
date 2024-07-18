@@ -41,10 +41,10 @@ function ForgotPassword() {
                         <p className="mt-2 text-sm text-gray-800">
                             Remembered your password?{' '}
                             <Link
-                                to="/sign-in"
+                                to="/login"
                                 className="font-semibold text-purple-800 transition-all duration-200 hover:underline"
                             >
-                                Sign In
+                                Login
                             </Link>
                         </p>
                         <form onSubmit={handleSubmit} className="mt-8">
