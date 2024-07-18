@@ -25,6 +25,15 @@ const generateAccessAndRefereshTokens = async(userId) =>{
 
 // Register a new user
 const signUpUser = asyncHandler(async (req, res) => {
+    // steps to register a user
+    // 1. get the user data from the request body (data that is sent from the client to the server - frontend)
+    // 2. validate the user data - not empty, valid email, password, role
+    // 3. check if the user already exists in the database - using email
+    // 4. create user object - a new entry in the database
+    // 5. create faculty or student object based on the role
+    // 6. remove the password and refreshToken from the user object
+    // 7. send a response
+
     const { email, password, role} = req.body;
 
     if(!email) {
@@ -34,6 +43,10 @@ const signUpUser = asyncHandler(async (req, res) => {
     if(!password) { 
         throw new ApiError(400, "Password is required");
     }   
+
+    if(!role) {
+        throw new ApiError(400, "Role is required");
+    }
 
     const existingUser = await User.findOne({ email });
 
@@ -52,9 +65,9 @@ const signUpUser = asyncHandler(async (req, res) => {
     }
 
     if (role === "faculty") {
-        await Faculty.create({ user: user._id, department: req.body.department, email: email });
+        await Faculty.create({ user: user._id, department: req.body.department});
     } else if (role === "student") {
-        await Student.create({ user: user._id, branch: req.body.branch, email: email });
+        await Student.create({ user: user._id, branch: req.body.branch});
     } else {
         throw new ApiError(400, "Invalid role");
     }
@@ -72,6 +85,15 @@ const signUpUser = asyncHandler(async (req, res) => {
 
 // login user
 const loginUser = asyncHandler(async (req, res) => {
+    // steps to login a user
+    // 1. get the user data from the request body (data that is sent from the client to the server - frontend)
+    // 2. validate the user data - not empty, valid email, password
+    // 3. check if the user exists in the database - using email
+    // 4. check if the password is correct
+    // 5. generate an access token and refresh token
+    // 6. send cookies with the tokens
+    // 7. send a response
+
     const { email, password } = req.body;
 
     if (!email) {
@@ -118,4 +140,36 @@ const loginUser = asyncHandler(async (req, res) => {
     )
 });
 
-export { signUpUser, loginUser };
+// logout user
+const logoutUser = asyncHandler(async (req, res) => {
+    // steps to logout a user
+    // 1. set the refreshToken to undefined in the database
+    // 2. clear the access and refresh tokens from the cookies
+    // 3. send a response to the client
+
+    await User.findByIdAndUpdate(
+        req.user._id, 
+        {
+            $set: {
+                refreshToken: undefined
+            },
+        },
+        {
+            new: true
+        }
+    )
+
+    const options = {
+        httpOnly: true,
+        secure: true,
+    }
+
+    return res.status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(
+            new ApiResponse(200, {}, "User logged out successfully")
+        )
+})
+
+export { signUpUser, loginUser, logoutUser };
