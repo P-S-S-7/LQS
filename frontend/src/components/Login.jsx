@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { REACT_APP_API_URI} from '../constants.js'; 
 
 function Login() {
     const [role, setRole] = useState('Student');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+
 
     const handleRoleChange = (e) => {
         setRole(e.target.value);
@@ -18,17 +23,30 @@ function Login() {
         setPassword(e.target.value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // add authentication logic here
-        console.log('Role:', role);
-        console.log('Email:', email);
-        console.log('Password:', password);
-        // redirect after successful login
+
+        try {
+            console.log('Submitting form with:', { email, password, role });
+            const response = await axios.post(`${REACT_APP_API_URI}/users/login`, {
+                email,
+                password,
+                role,
+            });
+
+            if (role === 'Student') {
+                navigate('/student-portal'); 
+            } else if (role === 'Faculty') {
+                navigate('/faculty-portal'); 
+            }
+        } catch (error) {
+            console.error('Login failed:', error.response?.data || error.message);
+            setError(error.response?.data?.message || 'Invalid credentials');
+        }
     };
 
     return (
-        <section className="flex items-center justify-center bg-gradient-to-br from-purple-400 to-blue-400">
+        <section className="flex items-center justify-center bg-gradient-to-br from-purple-400 to-blue-400 ">
             <div className="bg-gradient-to-br from-purple-400 to-blue-400 px-4 py-10 sm:px-6 sm:py-16 lg:px-8 xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md rounded-md shadow-lg">
                 <div className="flex flex-col items-center">
                     <svg
@@ -47,6 +65,7 @@ function Login() {
                     <h2 className="text-2xl font-bold leading-tight text-gray-800 mb-4">
                         Login
                     </h2>
+                    {error && <p className="text-red-600 mb-4">{error}</p>}
                     <form onSubmit={handleSubmit} className="w-full max-w-sm">
                         <div className="space-y-4">
                             <div>

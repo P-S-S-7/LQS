@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+
 const userSchema = new Schema(
     {
         email: {
@@ -19,7 +20,7 @@ const userSchema = new Schema(
         role: {
             type: String,
             required: [true, "Role is required"],
-            enum: ["student", "faculty"],
+            enum: ["Student", "Faculty"],
         },
         refreshToken: {
             type: String,

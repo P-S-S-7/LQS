@@ -31,7 +31,7 @@ const signUpUser = asyncHandler(async (req, res) => {
     // 2. validate the user data - not empty, valid email, password, role
     // 3. check if the user already exists in the database - using email
     // 4. create user object - a new entry in the database
-    // 5. create faculty or student object based on the role
+    // 5. create Faculty or Student object based on the role
     // 6. remove the password and refreshToken from the user object
     // 7. send a response
 
@@ -65,9 +65,9 @@ const signUpUser = asyncHandler(async (req, res) => {
         throw new ApiError(500, "User registration failed");
     }
 
-    if (role === "faculty") {
+    if (role === "Faculty") {
         await Faculty.create({ user: user._id, department: req.body.department});
-    } else if (role === "student") {
+    } else if (role === "Student") {
         await Student.create({ user: user._id, branch: req.body.branch});
     } else {
         throw new ApiError(400, "Invalid role");
@@ -84,7 +84,7 @@ const signUpUser = asyncHandler(async (req, res) => {
     );
 });
 
-// login user
+// login a user
 const loginUser = asyncHandler(async (req, res) => {
     // steps to login a user
     // 1. get the user data from the request body (data that is sent from the client to the server - frontend)
@@ -94,7 +94,6 @@ const loginUser = asyncHandler(async (req, res) => {
     // 5. generate an access token and refresh token
     // 6. send cookies with the tokens
     // 7. send a response
-
     const { email, password } = req.body;
 
     if (!email) {
@@ -111,15 +110,17 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new ApiError(404, "User not found");
     }
 
-    const isValidPassword = await user.isPasswordCorrect(password)
+    const isValidPassword = await user.isPasswordCorrect(password);
 
     if (!isValidPassword) {
         throw new ApiError(401, "Invalid credentials");
     }
 
-    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
+    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
 
-    const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
+    // Exclude sensitive fields from user object and include role
+    const loggedInUser = await User.findById(user._id)
+                                   .select("-password -refreshToken");
 
     const options = {
         httpOnly: true,
@@ -127,18 +128,20 @@ const loginUser = asyncHandler(async (req, res) => {
     };
 
     return res
-    .status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json(
-        new ApiResponse(
-            200, 
-            {
-                user: loggedInUser, accessToken, refreshToken
-            },
-            "User logged In Successfully"
-        )
-    )
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+            new ApiResponse(
+                200, 
+                {
+                    user: loggedInUser, 
+                    accessToken, 
+                    refreshToken
+                },
+                "User logged In Successfully"
+            )
+        );
 });
 
 // logout user

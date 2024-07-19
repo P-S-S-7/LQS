@@ -6,10 +6,11 @@ const app = express();
 
 app.use(cors(
     {
-        origin: process.env.CLIENT_URL,
+        origin: process.env.CLIENT_URL ,
         credentials: true,
     }
 ));
+
 
 app.use(express.json({ limit: "16kb" })); // body-parser (Middleware to parse JSON data)
 app.use(express.urlencoded({ extended: true, limit: "16kb" })); // body-parser (Middleware to parse URL-encoded data)

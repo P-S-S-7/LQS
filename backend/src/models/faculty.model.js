@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const facultySchema = new Schema(
+const FacultySchema = new Schema(
     {
         department: {
             type: String,
@@ -10,4 +10,4 @@ const facultySchema = new Schema(
     }
 );
 
-export const Faculty = mongoose.model('Faculty', facultySchema);
+export const Faculty = mongoose.model('Faculty', FacultySchema);

@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const studentSchema = new Schema(
+const StudentSchema = new Schema(
     {
         branch: {
             type: String,
@@ -10,5 +10,5 @@ const studentSchema = new Schema(
     }
 );
 
-export const Student = mongoose.model('Student', studentSchema);
+export const Student = mongoose.model('Student', StudentSchema);
 
