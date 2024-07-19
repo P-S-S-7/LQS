@@ -16,7 +16,7 @@ function ForgotPassword() {
     };
 
     return (
-        <>
+        <div style={{ maxWidth: '400px', width: '100%', padding: '20px', background: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px' }}>
             <section className="rounded-md bg-gradient-to-br from-purple-400 to-blue-400 p-2">
                 <div className="flex items-center justify-center bg-gradient-to-br from-purple-400 to-blue-400 px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
                     <div className="xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md">
@@ -92,7 +92,7 @@ function ForgotPassword() {
                     </div>
                 </div>
             </section>
-        </>
+        </div>
     );
 }
 
