@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { REACT_APP_API_URI, emailRegex, passwordRegex } from '../constants.js'; 
+import { REACT_APP_API_URI, passwordRegex, studentEmailRegex, facultyEmailRegex } from '../constants.js'; 
 
 const Signup = () => {
     const [email, setEmail] = useState('');
@@ -17,7 +17,12 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!emailRegex.test(email)) {
+        if(role === 'Student' && !studentEmailRegex.test(email)) {
+            setError('Invalid email address');
+            return;
+        }
+
+        if(role === 'Faculty' && !facultyEmailRegex.test(email)) {
             setError('Invalid email address');
             return;
         }
