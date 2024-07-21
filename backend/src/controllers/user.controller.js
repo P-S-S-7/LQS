@@ -125,6 +125,8 @@ const loginUser = asyncHandler(async (req, res) => {
     const options = {
         httpOnly: true,
         secure: true,
+        path: "/",
+        sameSite: false
     };
 
     return res
@@ -166,6 +168,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     const options = {
         httpOnly: true,
         secure: true,
+        path: "/",
     }
 
     return res.status(200)
@@ -205,8 +208,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
      
          // why options ? - to make sure the cookies are updated only by the server
          const options = {
-             httpOnly: true,
-             secure: true
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
          }
      
          const {newAccessToken, newRefreshToken} = await generateAccessAndRefereshTokens(user._id)
@@ -225,4 +229,23 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 })
 
-export { signUpUser, loginUser, logoutUser, refreshAccessToken };
+// get user details
+const getUserDetails = asyncHandler(async (req, res) => {
+    // steps to get user details
+    // 1. get the user details from the database
+    // 2. send a response with the user details
+
+    const user = await User.findById(req.user._id).select("-password -refreshToken");
+
+    console.log(user);
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, user.email, "User details retrieved successfully")
+    );
+});
+
+export { signUpUser, loginUser, logoutUser, refreshAccessToken, getUserDetails };

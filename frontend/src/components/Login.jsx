@@ -36,12 +36,17 @@ function Login() {
                 withCredentials: true
             });
 
-            console.log('Login successful:', response.data);
+            const jsonResponse = JSON.parse(JSON.stringify(response.data));
+            console.log('Login successful:', jsonResponse);
 
-            if (role === 'Student') {
+            const responseRole = jsonResponse.data.user.role;
+
+            if (responseRole === 'Student' && role === 'Student') {
                 navigate('/student-portal'); 
-            } else if (role === 'Faculty') {
+            } else if (responseRole === 'Faculty' && role === 'Faculty') {
                 navigate('/faculty-portal'); 
+            } else {
+                setError('Invalid role');
             }
         } catch (error) {
             console.error('Login failed:', error.response?.data || error.message);
