@@ -3,6 +3,7 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { REACT_APP_API_URI } from '../constants.js';
+import { useNavigate } from 'react-router-dom'; 
 
 const ScheduleQuiz = () => {
   const [batch, setBatch] = useState('');
@@ -12,13 +13,20 @@ const ScheduleQuiz = () => {
   const [endTime, setEndTime] = useState(new Date());
   const [error, setError] = useState('');
   const batchList = ['Y-18', 'Y-19', 'Y-20', 'Y-21', 'Y-22', 'Y-23', 'Y-24'];
+ 
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (batch) {
       const fetchCourses = async () => {
         try {
-          const response = await axios.get(`${REACT_APP_API_URI}/users/courses?batch=${batch}`);
-          setCourses(response.data);
+          const response = await axios.get(`${REACT_APP_API_URI}/courses`, {
+            params: { batch },
+          });
+
+          console.log('Courses:', response.data);
+
+          setCourses(response.data.data);
         } catch (error) {
           console.error('Error fetching courses:', error);
         }
@@ -31,13 +39,8 @@ const ScheduleQuiz = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (startTime >= endTime) {
-      setError('End time must be after the start time.');
-      return;
-    }
-
     try {
-      const response = await axios.post(`${REACT_APP_API_URI}/users/schedule-quiz`, {
+      const response = await axios.post(`${REACT_APP_API_URI}/quizzes/schedule`, {
         batch,
         course,
         startTime,
@@ -45,9 +48,12 @@ const ScheduleQuiz = () => {
       });
       console.log('Quiz scheduled:', response.data);
       setError('');
+      
+      navigate('/faculty-portal');
     } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Error scheduling quiz. Please try again.';
       console.error('Error scheduling quiz:', error);
-      setError('Error scheduling quiz. Please try again.');
+      setError(errorMessage);
     }
   };
 

@@ -35,7 +35,11 @@ const signUpUser = asyncHandler(async (req, res) => {
     // 6. remove the password and refreshToken from the user object
     // 7. send a response
 
-    const { email, password, role} = req.body;
+    const { name, email, password, role} = req.body;
+
+    if(!name) {
+        throw new ApiError(400, "Name is required");
+    }
 
     if(!email) {
         throw new ApiError(400, "Email is required");
@@ -56,6 +60,7 @@ const signUpUser = asyncHandler(async (req, res) => {
     }
 
     const user = await User.create({
+        name,
         email,
         password,
         role
@@ -66,9 +71,9 @@ const signUpUser = asyncHandler(async (req, res) => {
     }
 
     if (role === "Faculty") {
-        await Faculty.create({ user: user._id, department: req.body.department});
+        await Faculty.create({ user: user._id, name: req.body.name, department: req.body.department, email: req.body.email});
     } else if (role === "Student") {
-        await Student.create({ user: user._id, branch: req.body.branch});
+        await Student.create({ user: user._id, name: req.body.name, branch: req.body.branch, email: req.body.email});
     } else {
         throw new ApiError(400, "Invalid role");
     }
@@ -118,7 +123,6 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id);
 
-    // Exclude sensitive fields from user object and include role
     const loggedInUser = await User.findById(user._id)
                                    .select("-password -refreshToken");
 
@@ -126,7 +130,6 @@ const loginUser = asyncHandler(async (req, res) => {
         httpOnly: true,
         secure: true,
         path: "/",
-        sameSite: false
     };
 
     return res
@@ -237,14 +240,19 @@ const getUserDetails = asyncHandler(async (req, res) => {
 
     const user = await User.findById(req.user._id).select("-password -refreshToken");
 
-    console.log(user);
-
     if (!user) {
         throw new ApiError(404, "User not found");
     }
 
+    // extract email and name from the user
+
+    const sendUser = {
+        email: user.email,
+        name: user.name
+    }
+
     return res.status(200).json(
-        new ApiResponse(200, user.email, "User details retrieved successfully")
+        new ApiResponse(200, sendUser, "User details retrieved successfully")
     );
 });
 
