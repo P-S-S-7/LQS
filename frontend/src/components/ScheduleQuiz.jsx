@@ -22,6 +22,7 @@ const ScheduleQuiz = () => {
         try {
           const response = await axios.get(`${REACT_APP_API_URI}/courses`, {
             params: { batch },
+            withCredentials: true
           });
 
           console.log('Courses:', response.data);
@@ -45,6 +46,8 @@ const ScheduleQuiz = () => {
         course,
         startTime,
         endTime,
+      }, {
+        withCredentials: true 
       });
       console.log('Quiz scheduled:', response.data);
       setError('');
@@ -97,7 +100,7 @@ const ScheduleQuiz = () => {
             selected={startTime}
             onChange={(date) => setStartTime(date)}
             showTimeSelect
-            timeIntervals={15}  
+            timeIntervals={15}
             dateFormat="Pp"
             className="w-full border border-gray-300 rounded-lg p-2"
           />
@@ -108,7 +111,7 @@ const ScheduleQuiz = () => {
             selected={endTime}
             onChange={(date) => setEndTime(date)}
             showTimeSelect
-            timeIntervals={15}  
+            timeIntervals={15}
             dateFormat="Pp"
             className="w-full border border-gray-300 rounded-lg p-2"
           />
