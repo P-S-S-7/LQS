@@ -49,4 +49,5 @@ const getQuizzesByUser = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, quizzes));
 });
 
-export { scheduleQuiz, getQuizzesByBatch, getQuizzesByUser };
+
+export { scheduleQuiz, getQuizzesByBatch, getQuizzesByUser};

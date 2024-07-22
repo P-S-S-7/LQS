@@ -37,7 +37,11 @@ const FacultyPortal = () => {
             withCredentials: true,
             params: { batch },
           });
-          const sortedQuizzes = response.data.data.sort(
+
+          const now = new Date();
+          const quizzes = response.data.data.filter(quiz => new Date(quiz.endTime) >= now);
+       
+          const sortedQuizzes = quizzes.sort(
             (a, b) => new Date(a.startTime) - new Date(b.startTime)
           );
           setQuizzes(sortedQuizzes);

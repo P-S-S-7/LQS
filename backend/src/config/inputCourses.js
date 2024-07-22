@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import { Course } from './models/course.model.js';
-import { DB_NAME } from './constants.js';
+import { Course } from '../models/course.model.js';
+import { DB_NAME } from '../constants.js';
 
 dotenv.config({path: "../.env"});
 
