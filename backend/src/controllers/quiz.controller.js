@@ -49,5 +49,22 @@ const getQuizzesByUser = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, quizzes));
 });
 
+// Delete a quiz
+const deleteQuiz = asyncHandler(async (req, res) => {
+  const { id } = req.params;
 
-export { scheduleQuiz, getQuizzesByBatch, getQuizzesByUser};
+  const quiz = await Quiz.findById(id);
+
+  if (!quiz) {
+    throw new ApiError(404, 'Quiz not found');
+  }
+
+  if (quiz.scheduledBy.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, 'You are not authorized to delete this quiz');
+  }
+
+  await Quiz.findByIdAndDelete(id);
+  res.status(200).json(new ApiResponse(200, 'Quiz deleted successfully'));
+});
+
+export { scheduleQuiz, getQuizzesByBatch, getQuizzesByUser, deleteQuiz };

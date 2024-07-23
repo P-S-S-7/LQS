@@ -10,7 +10,7 @@ const FacultyPortal = () => {
   const [batch, setBatch] = useState('');
   const [quizzes, setQuizzes] = useState([]);
   const [userQuizzes, setUserQuizzes] = useState([]);
-  const [viewType, setViewType] = useState('batch'); 
+  const [viewType, setViewType] = useState('batch');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,7 +69,7 @@ const FacultyPortal = () => {
 
       setUserQuizzes(sortedQuizzes);
       console.log('User Quizzes:', sortedQuizzes);
-      setViewType('user'); 
+      setViewType('user');
     } catch (error) {
       console.error('Error fetching user quizzes:', error);
     }
@@ -77,7 +77,20 @@ const FacultyPortal = () => {
 
   const handleBatchChange = (e) => {
     setBatch(e.target.value);
-    setViewType('batch'); 
+    setViewType('batch');
+  };
+
+  const handleDeleteQuiz = async (quizId) => {
+    try {
+      await axios.delete(`${REACT_APP_API_URI}/quizzes/delete/${quizId}`, {
+        withCredentials: true,
+      });
+      
+      setUserQuizzes(userQuizzes.filter(quiz => quiz._id !== quizId));
+      console.log('Quiz deleted:', quizId);
+    } catch (error) {
+      console.error('Error deleting quiz:', error);
+    }
   };
 
   return (
@@ -172,6 +185,7 @@ const FacultyPortal = () => {
                     <th className="py-2 px-4 border-r">Course</th>
                     <th className="py-2 px-4 border-r">Start Time</th>
                     <th className="py-2 px-4">End Time</th>
+                    <th className="py-2 px-4">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -186,6 +200,14 @@ const FacultyPortal = () => {
                         <td className="py-2 px-4 border-r">{quiz.course}</td>
                         <td className="py-2 px-4 border-r">{startDate.toLocaleTimeString([], timeOptions)}</td>
                         <td className="py-2 px-4">{endDate.toLocaleTimeString([], timeOptions)}</td>
+                        <td className="py-2 px-4">
+                          <button
+                            onClick={() => handleDeleteQuiz(quiz._id)}
+                            className="bg-red-500 text-white py-1 px-2 rounded-lg hover:bg-red-600"
+                          >
+                            Delete
+                          </button>
+                        </td>
                       </tr>
                     );
                   })}
