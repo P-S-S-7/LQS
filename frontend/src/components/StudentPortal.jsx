@@ -30,7 +30,7 @@ const StudentPortal = () => {
     if (batch) {
       const fetchQuizzes = async () => {
         try {
-          const response = await axios.get(`${REACT_APP_API_URI}/quizzes`, {
+          const response = await axios.get(`${REACT_APP_API_URI}/quizzes/batch`, {
             withCredentials: true,
             params: { batch },
           });

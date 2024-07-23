@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import Logout from './Logout';
 import { REACT_APP_API_URI } from '../constants.js';
 
@@ -10,13 +10,14 @@ const FacultyPortal = () => {
   const [batch, setBatch] = useState('');
   const [quizzes, setQuizzes] = useState([]);
   const [userQuizzes, setUserQuizzes] = useState([]);
+  const [viewType, setViewType] = useState('batch'); 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEmail = async () => {
       try {
         const response = await axios.get(`${REACT_APP_API_URI}/users/user-details`, {
-          withCredentials: true, // httpOnly cookies are sent automatically with axios requests
+          withCredentials: true,
         });
         setEmail(response.data.data.email);
         setName(response.data.data.name);
@@ -30,7 +31,7 @@ const FacultyPortal = () => {
   }, []);
 
   useEffect(() => {
-    if (batch) {
+    if (batch && viewType === 'batch') {
       const fetchQuizzes = async () => {
         try {
           const response = await axios.get(`${REACT_APP_API_URI}/quizzes/batch`, {
@@ -40,7 +41,7 @@ const FacultyPortal = () => {
 
           const now = new Date();
           const quizzes = response.data.data.filter(quiz => new Date(quiz.endTime) >= now);
-       
+
           const sortedQuizzes = quizzes.sort(
             (a, b) => new Date(a.startTime) - new Date(b.startTime)
           );
@@ -53,7 +54,7 @@ const FacultyPortal = () => {
 
       fetchQuizzes();
     }
-  }, [batch]);
+  }, [batch, viewType]);
 
   const handleNavigateToScheduleQuiz = () => {
     navigate('/schedule-quiz');
@@ -64,13 +65,19 @@ const FacultyPortal = () => {
       const response = await axios.get(`${REACT_APP_API_URI}/quizzes/user`, {
         withCredentials: true,
       });
-      const sortedQuizzes = response.data.data
-      
+      const sortedQuizzes = response.data.data;
+
       setUserQuizzes(sortedQuizzes);
       console.log('User Quizzes:', sortedQuizzes);
+      setViewType('user'); 
     } catch (error) {
       console.error('Error fetching user quizzes:', error);
     }
+  };
+
+  const handleBatchChange = (e) => {
+    setBatch(e.target.value);
+    setViewType('batch'); 
   };
 
   return (
@@ -90,10 +97,10 @@ const FacultyPortal = () => {
       <div className="flex-grow flex">
         <div className="w-1/4 bg-white rounded-lg shadow-md p-4 border border-gray-300 mr-4">
           <label htmlFor="batch" className="block text-gray-700 mb-2">Select Batch</label>
-          <select 
+          <select
             id="batch"
             value={batch}
-            onChange={(e) => setBatch(e.target.value)}
+            onChange={handleBatchChange}
             className="w-full border border-gray-300 rounded-lg p-2 bg-blue-50 text-gray-700"
           >
             <option value="">Select Batch</option>
@@ -119,7 +126,7 @@ const FacultyPortal = () => {
           </button>
         </div>
         <div className="flex-grow bg-white rounded-lg shadow-md p-4 border border-gray-300">
-          {batch && quizzes.length > 0 ? (
+          {viewType === 'batch' && batch && quizzes.length > 0 ? (
             <>
               <h2 className="text-center text-xl font-bold text-purple-800 mb-4">
                 Quizzes for Batch {batch}
@@ -150,12 +157,11 @@ const FacultyPortal = () => {
                 </tbody>
               </table>
             </>
-          ) : (
-            batch && <p className="text-center text-gray-700">No quizzes scheduled for this batch.</p>
-          )}
-          {userQuizzes.length > 0 && (
+          ) : viewType === 'batch' && batch ? (
+            <p className="text-center text-gray-700">No quizzes scheduled for this batch.</p>
+          ) : viewType === 'user' && userQuizzes.length > 0 ? (
             <>
-              <h2 className="text-center text-xl font-bold text-blue-800 mb-4 mt-8">
+              <h2 className="text-center text-xl font-bold text-blue-800 mb-4">
                 Your Scheduled Quizzes
               </h2>
               <table className="w-full border-collapse">
@@ -186,7 +192,9 @@ const FacultyPortal = () => {
                 </tbody>
               </table>
             </>
-          )}
+          ) : viewType === 'user' ? (
+            <p className="text-center text-gray-700">No quizzes scheduled by you.</p>
+          ) : null}
         </div>
       </div>
     </div>

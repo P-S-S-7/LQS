@@ -1,27 +1,43 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { REACT_APP_API_URI } from '../constants.js';
+import { passwordRegex, REACT_APP_API_URI } from '../constants';
 
-function ForgotPassword() {
-    const [email, setEmail] = useState('');
+function ResetPassword() {
+    const { token } = useParams();
+    const navigate = useNavigate();
+    const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
-    const handleEmailChange = (e) => {
-        setEmail(e.target.value);
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage('');
-        setError('');
+
+        if (!password) {
+            setError('Password is required');
+            return;
+        }
+
+        if (!passwordRegex.test(password)) {
+            setError('Password must be at least 8 characters long and contain at least one letter, one number, and one special character.');
+            return;
+        }
 
         try {
-            const response = await axios.post(`${REACT_APP_API_URI}/users/forgot-password`, { email });
+            const response = await axios.post(`${REACT_APP_API_URI}/users/reset-password/${token}`, { password });
             setMessage(response.data.message);
+
+            console.log(response.data);
+
+            setError('');
+            setTimeout(() => navigate('/login'), 2000); 
         } catch (err) {
-            setError(err.response ? err.response.data.message : 'An error occurred. Please try again.');
+            setMessage('');
+            setError(err.response?.data?.message || 'An error occurred');
         }
     };
 
@@ -46,31 +62,22 @@ function ForgotPassword() {
                             </svg>
                         </div>
                         <h2 className="text-2xl font-bold leading-tight text-gray-800">
-                            Forgot Password
+                            Reset Password
                         </h2>
-                        <p className="mt-2 text-sm text-gray-800">
-                            Remembered your password?{' '}
-                            <Link
-                                to="/login"
-                                className="font-semibold text-purple-800 transition-all duration-200 hover:underline"
-                            >
-                                Login
-                            </Link>
-                        </p>
                         <form onSubmit={handleSubmit} className="mt-8">
                             <div className="space-y-5">
                                 <div>
-                                    <label htmlFor="email" className="text-base font-medium text-gray-800">
-                                        Email address
+                                    <label htmlFor="password" className="text-base font-medium text-gray-800">
+                                        New Password
                                     </label>
                                     <div className="mt-2">
                                         <input
-                                            type="email"
-                                            id="email"
-                                            value={email}
-                                            onChange={handleEmailChange}
+                                            type="password"
+                                            id="password"
+                                            value={password}
+                                            onChange={handlePasswordChange}
                                             className="w-full h-10 px-3 py-2 text-sm placeholder-gray-400 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
-                                            placeholder="Enter your email address"
+                                            placeholder="Enter your new password"
                                         />
                                     </div>
                                 </div>
@@ -79,7 +86,7 @@ function ForgotPassword() {
                                         type="submit"
                                         className="w-full h-10 flex items-center justify-center rounded-md bg-gradient-to-br from-purple-700 to-blue-500 text-gray-800 px-3.5 py-2.5 font-semibold leading-7 hover:bg-gray-300"
                                     >
-                                        Send Reset Link{' '}
+                                        Reset Password{' '}
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             width="16"
@@ -95,14 +102,12 @@ function ForgotPassword() {
                                             <line x1="5" y1="12" x2="19" y2="12"></line>
                                             <polyline points="12 5 19 12 12 19"></polyline>
                                         </svg>
-                                    </button>
+                                    </button>   
                                 </div>
                             </div>
-                            <div className="flex flex-col items-center">
-                                {message && <p className="mt-4 text-green-600 text-center">{message}</p>}
-                                {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
-                            </div>
                         </form>
+                        {message && <p className="mt-4 text-green-600 text-center">{message}</p>}
+                        {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
                     </div>
                 </div>
             </section>
@@ -110,4 +115,4 @@ function ForgotPassword() {
     );
 }
 
-export default ForgotPassword;
+export default ResetPassword;

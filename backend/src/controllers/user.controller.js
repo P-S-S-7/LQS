@@ -5,6 +5,8 @@ import { Faculty } from '../models/faculty.model.js';
 import { Student } from '../models/student.model.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import jwt from 'jsonwebtoken';
+import sgMail from '@sendgrid/mail';
+
 
 // Generate access and refresh tokens
 const generateAccessAndRefereshTokens = async(userId) =>{
@@ -256,4 +258,117 @@ const getUserDetails = asyncHandler(async (req, res) => {
     );
 });
 
-export { signUpUser, loginUser, logoutUser, refreshAccessToken, getUserDetails };
+// forgot password logic
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+// send email with reset password link
+const sendEmail = async (to, subject, html) => {
+    const msg = {
+        to,
+        from: {
+            name: process.env.EMAIL_FROM_NAME,
+            email: process.env.EMAIL_FROM,
+        },
+        subject,
+        html,
+    };
+    await sgMail.send(msg);
+};
+
+// forgot password 
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        throw new ApiError(400, "Email is required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    const baseFrontendUrl = process.env.BASE_FRONTEND_URL || 'http://localhost:5173';
+    const token = jwt.sign({ id: user._id }, process.env.RESET_PASSWORD_SECRET, { expiresIn: '1d' });
+    const resetUrl = `${baseFrontendUrl}/reset-password/${token}`;
+
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; 
+    await user.save();
+
+    const message = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+            <h2 style="color: #333;">Password Reset Request</h2>
+            <p>Dear ${user.name},</p>
+            <p>We received a request to reset your password. Click the link below to reset your password:</p>
+            <a href="${resetUrl}" style="display: inline-block; padding: 10px 20px; margin: 10px 0; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;">Reset Password</a>
+            <p>If you did not request a password reset, please ignore this email or contact support ${process.env.EMAIL_FROM} if you have questions.</p>
+            <p>Thank you,</p>
+            <p>LNMIIT</p>
+        </div>
+    `;
+
+    await sendEmail(user.email, 'Password Reset Request', message);
+
+    return res.status(200).json(new ApiResponse(200, {}, 'Email sent - check your inbox or spam folder'));
+});
+
+
+// reset password
+const resetPassword = asyncHandler(async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    if (!password) {
+        throw new ApiError(400, "Password is required");
+    }
+
+    let decoded;
+    try {
+        decoded = jwt.verify(token, process.env.RESET_PASSWORD_SECRET);
+    } catch (err) {
+        console.error('JWT verification failed:', err);
+        throw new ApiError(400, "Invalid or expired token");
+    }
+
+    const user = await User.findOne({
+        _id: decoded.id,
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        throw new ApiError(400, "Invalid or expired token");
+    }
+
+    const checkForSamePassword = await user.isPasswordCorrect(password);
+
+    if (checkForSamePassword) {
+        throw new ApiError(400, "Cannot use the same password");
+    }
+
+
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    try {
+        await user.save();
+        console.log('Password updated successfully');
+    } catch (err) {
+        console.error('Error saving user:', err);
+        throw new ApiError(500, "Error saving password");
+    }
+
+    return res.status(200).json(new ApiResponse(200, 'Password reset successful'));
+});
+
+
+
+
+
+
+
+export { signUpUser, loginUser, logoutUser, refreshAccessToken, getUserDetails, forgotPassword, resetPassword };

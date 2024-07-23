@@ -32,10 +32,10 @@ const Signup = () => {
             return;
         }
 
-        if(role === 'Faculty' && !facultyEmailRegex.test(email)) {
-            setError('Invalid email address');
-            return;
-        }
+        // if(role === 'Faculty' && !facultyEmailRegex.test(email)) {
+        //     setError('Invalid email address');
+        //     return;
+        // }
 
         if (!passwordRegex.test(password)) {
             setError('Password must be at least 8 characters long and contain at least one letter, one number, and one special character.');

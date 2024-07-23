@@ -44,8 +44,6 @@ function Login() {
             console.log('Login successful:', jsonResponse);
 
             const responseRole = jsonResponse.data.user.role;
-            console.log('Role:', responseRole);
-            console.log('Role:', role);
 
             if (responseRole === 'Student' && role === 'Student') {
                 navigate('/student-portal'); 
