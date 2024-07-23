@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { REACT_APP_API_URI } from '../constants.js'; 
+import { REACT_APP_API_URI } from '../constants.js';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 function Login() {
     const [role, setRole] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleRoleChange = (e) => {
@@ -27,13 +29,13 @@ function Login() {
 
         if (!email || !password || !role) {
             setError('All fields are required');
-            return; 
+            return;
         }
 
         try {
             console.log('Submitting form with:', { email, password, role });
             const response = await axios.post(`${REACT_APP_API_URI}/users/login`, {
-               email,
+                email,
                 password,
                 role
             }, {
@@ -46,9 +48,9 @@ function Login() {
             const responseRole = jsonResponse.data.user.role;
 
             if (responseRole === 'Student' && role === 'Student') {
-                navigate('/student-portal'); 
+                navigate('/student-portal');
             } else if (responseRole === 'Faculty' && role === 'Faculty') {
-                navigate('/faculty-portal'); 
+                navigate('/faculty-portal');
             } else {
                 setError('Invalid role');
             }
@@ -58,8 +60,12 @@ function Login() {
         }
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
     return (
-        <div style={{ maxWidth: '400px', width: '100%', padding: '20px', background: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px' }}> 
+        <div style={{ maxWidth: '400px', width: '100%', padding: '20px', background: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px' }}>
             <div className="bg-gradient-to-br from-purple-400 to-blue-400 px-4 py-10 sm:px-6 sm:py-16 lg:px-8 xl:mx-auto xl:w-full xl:max-w-sm 2xl:max-w-md rounded-md shadow-lg">
                 <div className="flex flex-col items-center">
                     <h2 className="text-2xl font-bold leading-tight text-gray-800 mb-4">
@@ -113,15 +119,22 @@ function Login() {
                                 >
                                     Password
                                 </label>
-                                <div>
+                                <div className="relative">
                                     <input
-                                        type="password"
+                                        type={showPassword ? 'text' : 'password'}
                                         id="password"
                                         value={password}
                                         onChange={handlePasswordChange}
                                         className="w-full h-10 px-3 py-2 text-sm placeholder-gray-400 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
                                         placeholder="Enter your password"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={togglePasswordVisibility}
+                                        className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-600 focus:outline-none"
+                                    >
+                                        {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                                    </button>
                                 </div>
                             </div>
                             <div className="flex items-center justify-between">

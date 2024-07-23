@@ -17,7 +17,7 @@ const FacultyPortal = () => {
     const fetchEmail = async () => {
       try {
         const response = await axios.get(`${REACT_APP_API_URI}/users/user-details`, {
-          withCredentials: true,
+          withCredentials: true,  // httpOnly cookies are sent automatically with axios requests
         });
         setEmail(response.data.data.email);
         setName(response.data.data.name);

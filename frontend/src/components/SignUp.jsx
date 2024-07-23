@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import { REACT_APP_API_URI, passwordRegex, studentEmailRegex, facultyEmailRegex, nameRegex } from '../constants.js'; 
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { REACT_APP_API_URI, passwordRegex, studentEmailRegex, facultyEmailRegex, nameRegex } from '../constants.js';
 
 const Signup = () => {
     const [name, setName] = useState('');
@@ -11,8 +12,9 @@ const Signup = () => {
     const [branch, setBranch] = useState('');
     const [department, setDepartment] = useState('');
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,7 +25,7 @@ const Signup = () => {
         }
 
         if (!nameRegex.test(name)) {
-            setError('Invalid name format.Every word should start with a capital letter.');
+            setError('Invalid name format. Every word should start with a capital letter and cannot contain digits or special characters.');
             return;
         }
 
@@ -59,11 +61,15 @@ const Signup = () => {
 
             if (response.status === 201) {
                 console.log('User registered successfully:', response.data);
-                navigate('/login'); 
+                navigate('/login');
             }
         } catch (error) {
             alert('Error registering user: ' + error.response?.data?.error + ' ' + '\n Check console for more details');
         }
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     return (
@@ -110,15 +116,24 @@ const Signup = () => {
                     </div>
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-900">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-3 py-2 text-sm placeholder-gray-400 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
-                            placeholder="Enter your password"
-                            required
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="w-full px-3 py-2 text-sm placeholder-gray-400 border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
+                                placeholder="Enter your password"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={togglePasswordVisibility}
+                                className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-600 focus:outline-none"
+                            >
+                                {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                            </button>
+                        </div>
                     </div>
                     {role === 'Student' && (
                         <div>
