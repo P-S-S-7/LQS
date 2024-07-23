@@ -13,7 +13,7 @@ const ScheduleQuiz = () => {
   const [endTime, setEndTime] = useState(new Date());
   const [error, setError] = useState('');
   const batchList = ['Y-18', 'Y-19', 'Y-20', 'Y-21', 'Y-22', 'Y-23', 'Y-24'];
- 
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +39,20 @@ const ScheduleQuiz = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const now = new Date();
+    const startDay = startTime.getDate();
+    const endDay = endTime.getDate();
+
+    if (startTime < now) {
+      setError('Start time must be after the current time.');
+      return;
+    }
+
+    if (startDay !== endDay) {
+      setError('Start time and End time must be on the same day.');
+      return;
+    }
 
     try {
       const response = await axios.post(`${REACT_APP_API_URI}/quizzes/schedule`, {

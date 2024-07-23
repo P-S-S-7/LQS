@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-import { REACT_APP_API_URI, passwordRegex, studentEmailRegex, facultyEmailRegex, nameRegex } from '../constants.js';
+import { REACT_APP_API_URI, passwordRegex, studentEmailRegex, nameRegex } from '../constants.js';
 
 const Signup = () => {
     const [name, setName] = useState('');
@@ -16,16 +16,37 @@ const Signup = () => {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (role === 'Student') {
+            const branchCode = extractBranchFromEmail(email);
+            if (branchCode) {
+                setBranch(branchCode);
+            } else {
+                setBranch('');
+            }
+        }
+    }, [email, role]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!name || !email || !password || !role || (role === 'Student' && !branch) || (role === 'Faculty' && !department)) {
-            setError('All fields are required');
+        if(!name) {
+            setError('Name is required');
             return;
         }
 
         if (!nameRegex.test(name)) {
             setError('Invalid name format. Every word should start with a capital letter and cannot contain digits or special characters.');
+            return;
+        }
+
+        if(role !== 'Student' && role !== 'Faculty') {
+            setError('Select a valid role');
+            return;
+        }
+
+        if(!email) {    
+            setError('Email is required');
             return;
         }
 
@@ -39,8 +60,23 @@ const Signup = () => {
         //     return;
         // }
 
+        if(!password) {
+            setError('Password is required');
+            return;
+        }
+
         if (!passwordRegex.test(password)) {
             setError('Password must be at least 8 characters long and contain at least one letter, one number, and one special character.');
+            return;
+        }
+
+        if(role === 'Student' && !branch) {
+            setError('Branch is required.Check your email address');
+            return;
+        }
+
+        if(role === 'Faculty' && !department) {
+            setError('Department is required');
             return;
         }
 
@@ -70,6 +106,28 @@ const Signup = () => {
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
+    };
+
+    const extractBranchFromEmail = (email) => {
+        const emailPrefix = email.split('@')[0];
+        const branchCode = emailPrefix.slice(2, 5).toUpperCase();
+        if(!studentEmailRegex.test(email)) {
+            return '';
+        }
+        switch (branchCode) {
+            case 'UCS':
+            case 'DCS':
+                return 'CSE';
+            case 'UEC':
+            case 'DEC':
+                return 'ECE';
+            case 'UME':
+                return 'MME';
+            case 'UCC':
+                return 'CCE';
+            default:
+                return '';
+        }
     };
 
     return (
@@ -138,18 +196,14 @@ const Signup = () => {
                     {role === 'Student' && (
                         <div>
                             <label htmlFor="branch" className="block text-sm font-medium text-gray-900">Branch</label>
-                            <select
+                            <input
                                 id="branch"
                                 value={branch}
                                 onChange={(e) => setBranch(e.target.value)}
+                                placeholder='Enter your branch'
                                 className="w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
                             >
-                                <option value="">Select your branch</option>
-                                <option value="CSE">CSE</option>
-                                <option value="CCE">CCE</option>
-                                <option value="ECE">ECE</option>
-                                <option value="MME">MME</option>
-                            </select>
+                            </input>
                         </div>
                     )}
                     {role === 'Faculty' && (

@@ -45,7 +45,7 @@ const getQuizzesByBatch = asyncHandler(async (req, res) => {
 
 // Get quizzes by user
 const getQuizzesByUser = asyncHandler(async (req, res) => {
-  const quizzes = await Quiz.find({ scheduledBy: req.user._id }).sort({ batch: 1 });
+  const quizzes = await Quiz.find({ scheduledBy: req.user._id }).sort({ batch: 1, startTime: 1 });
   res.status(200).json(new ApiResponse(200, quizzes));
 });
 

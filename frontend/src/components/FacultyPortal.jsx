@@ -81,6 +81,9 @@ const FacultyPortal = () => {
   };
 
   const handleDeleteQuiz = async (quizId) => {
+  const isConfirmed = window.confirm('Do you want to delete this quiz?');
+
+  if (isConfirmed) {
     try {
       await axios.delete(`${REACT_APP_API_URI}/quizzes/delete/${quizId}`, {
         withCredentials: true,
@@ -91,7 +94,11 @@ const FacultyPortal = () => {
     } catch (error) {
       console.error('Error deleting quiz:', error);
     }
-  };
+  } else {
+    console.log('Quiz deletion cancelled');
+  }
+};
+
 
   return (
     <div className="flex flex-col h-[90vh] w-full bg-gradient-to-r from-blue-200 via-green-200 to-purple-200 p-6 mx-3 my-7 mb-7 rounded-md">
