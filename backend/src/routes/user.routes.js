@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { signUpUser, loginUser, logoutUser, refreshAccessToken, getUserDetails, forgotPassword, resetPassword } from '../controllers/user.controller.js';
+import { signUpUser, loginUser, logoutUser, refreshAccessToken, getUserDetails, forgotPassword, resetPassword, verifyEmail } from '../controllers/user.controller.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
 router.route("/signup").post(signUpUser);
+router.route("/verify-email/:token").post(verifyEmail);
+
 router.route("/login").post(loginUser);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password/:token").post(resetPassword);

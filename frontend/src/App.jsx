@@ -9,6 +9,7 @@ import ResetPassword from './components/ResetPassword';
 import StudentPortal from './components/StudentPortal';
 import FacultyPortal from './components/FacultyPortal';
 import ScheduleQuiz from './components/ScheduleQuiz';
+import EmailVerification from './components/EmailVerification';
 
 
 const router = createBrowserRouter(
@@ -17,6 +18,7 @@ const router = createBrowserRouter(
         <Route path="" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/verify-email/:token" element={<EmailVerification />} />
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />

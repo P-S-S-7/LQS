@@ -8,6 +8,7 @@ const StudentPortal = () => {
   const [email, setEmail] = useState('');
   const [batch, setBatch] = useState('');
   const [quizzes, setQuizzes] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchEmail = async () => {
@@ -17,9 +18,8 @@ const StudentPortal = () => {
         });
         setEmail(response.data.data.email);
         setName(response.data.data.name);
-        console.log('Response Data:', response.data);
       } catch (error) {
-        console.error('Error fetching email:', error);
+        setError(error.response?.data?.message || 'Error fetching user details'); 
       }
     };
 
@@ -38,13 +38,12 @@ const StudentPortal = () => {
           const now = new Date();
           const quizzes = response.data.data.filter(quiz => new Date(quiz.endTime) >= now);
 
-          const sortedQuizzes = response.data.data.sort(
+          const sortedQuizzes = quizzes.sort(
             (a, b) => new Date(a.startTime) - new Date(b.startTime)
           );
           setQuizzes(sortedQuizzes);
-          console.log('Quizzes:', sortedQuizzes);
         } catch (error) {
-          console.error('Error fetching quizzes:', error);
+          setError(error.response?.data?.message || 'Error fetching quizzes'); 
         }
       };
 
@@ -63,6 +62,7 @@ const StudentPortal = () => {
         </div>
       </div>
       <div className="bg-white rounded-lg shadow-md p-4 border border-gray-300 mb-4">
+        {error && <p className="text-red-600 text-center">{error}</p>} 
         <p className="text-center text-gray-800 font-medium">Email: {email}</p>
         <p className="text-center text-gray-800 font-medium">Name: {name}</p>
       </div>

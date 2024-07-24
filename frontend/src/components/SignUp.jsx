@@ -8,10 +8,11 @@ const Signup = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('Student');
+    const [role, setRole] = useState('');
     const [branch, setBranch] = useState('');
     const [department, setDepartment] = useState('');
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
@@ -30,7 +31,10 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if(!name) {
+        setError('');
+        setSuccess('');
+
+        if (!name) {
             setError('Name is required');
             return;
         }
@@ -40,27 +44,27 @@ const Signup = () => {
             return;
         }
 
-        if(role !== 'Student' && role !== 'Faculty') {
+        if (role !== 'Student' && role !== 'Faculty') {
             setError('Select a valid role');
             return;
         }
 
-        if(!email) {    
+        if (!email) {    
             setError('Email is required');
             return;
         }
 
-        if(role === 'Student' && !studentEmailRegex.test(email)) {
+        if (role === 'Student' && !studentEmailRegex.test(email)) {
             setError('Invalid email address');
             return;
         }
 
-        // if(role === 'Faculty' && !facultyEmailRegex.test(email)) {
+        // if (role === 'Faculty' && !facultyEmailRegex.test(email)) {
         //     setError('Invalid email address');
         //     return;
         // }
 
-        if(!password) {
+        if (!password) {
             setError('Password is required');
             return;
         }
@@ -70,12 +74,12 @@ const Signup = () => {
             return;
         }
 
-        if(role === 'Student' && !branch) {
-            setError('Branch is required.Check your email address');
+        if (role === 'Student' && !branch) {
+            setError('Branch is required. Check your email address.');
             return;
         }
 
-        if(role === 'Faculty' && !department) {
+        if (role === 'Faculty' && !department) {
             setError('Department is required');
             return;
         }
@@ -96,11 +100,14 @@ const Signup = () => {
             });
 
             if (response.status === 201) {
-                console.log('User registered successfully:', response.data);
-                navigate('/login');
+                setSuccess('Registration successful. Please verify your email address. Check your inbox or spam folder.Redirecting to login...');
             }
+
+            setTimeout(() => navigate('/login'), 5000);
         } catch (error) {
-            alert('Error registering user: ' + error.response?.data?.error + ' ' + '\n Check console for more details');
+            const errorMessage = error.response?.data?.message || 'An unexpected error occurred.';
+            console.error('Signup Error:', error);
+            setError(errorMessage);
         }
     };
 
@@ -111,7 +118,7 @@ const Signup = () => {
     const extractBranchFromEmail = (email) => {
         const emailPrefix = email.split('@')[0];
         const branchCode = emailPrefix.slice(2, 5).toUpperCase();
-        if(!studentEmailRegex.test(email)) {
+        if (!studentEmailRegex.test(email)) {
             return '';
         }
         switch (branchCode) {
@@ -135,6 +142,7 @@ const Signup = () => {
             <div className="bg-gradient-to-br from-purple-400 to-blue-400 bg-opacity-90 p-6 sm:p-8 lg:p-10 rounded-md shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">Sign Up</h2>
                 {error && <p className="text-red-600 mb-4">{error}</p>}
+                {success && <p className="text-green-600 mb-4">{success}</p>}
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-900">Name</label>
@@ -156,6 +164,7 @@ const Signup = () => {
                             onChange={(e) => setRole(e.target.value)}
                             className="w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
                         >
+                            <option value="">Select your role</option>
                             <option value="Student">Student</option>
                             <option value="Faculty">Faculty</option>
                         </select>
@@ -202,8 +211,7 @@ const Signup = () => {
                                 onChange={(e) => setBranch(e.target.value)}
                                 placeholder='Enter your branch'
                                 className="w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600"
-                            >
-                            </input>
+                            />
                         </div>
                     )}
                     {role === 'Faculty' && (

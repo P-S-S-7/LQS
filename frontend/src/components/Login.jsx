@@ -42,14 +42,12 @@ function Login() {
                 withCredentials: true
             });
 
-            const jsonResponse = JSON.parse(JSON.stringify(response.data));
-            console.log('Login successful:', jsonResponse);
+            console.log('Login successful:', response.data);
 
-            const responseRole = jsonResponse.data.user.role;
-
-            if (responseRole === 'Student' && role === 'Student') {
+            const { user } = response.data;
+            if (user.role === 'Student' && role === 'Student') {
                 navigate('/student-portal');
-            } else if (responseRole === 'Faculty' && role === 'Faculty') {
+            } else if (user.role === 'Faculty' && role === 'Faculty') {
                 navigate('/faculty-portal');
             } else {
                 setError('Invalid role');
@@ -59,6 +57,7 @@ function Login() {
             setError(error.response?.data?.message || 'Invalid credentials');
         }
     };
+
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);

@@ -11,6 +11,7 @@ const FacultyPortal = () => {
   const [quizzes, setQuizzes] = useState([]);
   const [userQuizzes, setUserQuizzes] = useState([]);
   const [viewType, setViewType] = useState('batch');
+  const [error, setError] = useState(''); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +24,8 @@ const FacultyPortal = () => {
         setName(response.data.data.name);
         console.log('Response Data:', response.data);
       } catch (error) {
-        console.error('Error fetching email:', error);
+        setError(error.response?.data?.message || 'Error fetching user details'); 
+        console.error('Error fetching user details:', error);
       }
     };
 
@@ -48,6 +50,7 @@ const FacultyPortal = () => {
           setQuizzes(sortedQuizzes);
           console.log('Quizzes:', sortedQuizzes);
         } catch (error) {
+          setError(error.response?.data?.message || 'Error fetching quizzes'); 
           console.error('Error fetching quizzes:', error);
         }
       };
@@ -71,6 +74,7 @@ const FacultyPortal = () => {
       console.log('User Quizzes:', sortedQuizzes);
       setViewType('user');
     } catch (error) {
+      setError(error.response?.data?.message || 'Error fetching user quizzes'); 
       console.error('Error fetching user quizzes:', error);
     }
   };
@@ -81,24 +85,24 @@ const FacultyPortal = () => {
   };
 
   const handleDeleteQuiz = async (quizId) => {
-  const isConfirmed = window.confirm('Do you want to delete this quiz?');
+    const isConfirmed = window.confirm('Do you want to delete this quiz?');
 
-  if (isConfirmed) {
-    try {
-      await axios.delete(`${REACT_APP_API_URI}/quizzes/delete/${quizId}`, {
-        withCredentials: true,
-      });
-      
-      setUserQuizzes(userQuizzes.filter(quiz => quiz._id !== quizId));
-      console.log('Quiz deleted:', quizId);
-    } catch (error) {
-      console.error('Error deleting quiz:', error);
+    if (isConfirmed) {
+      try {
+        await axios.delete(`${REACT_APP_API_URI}/quizzes/delete/${quizId}`, {
+          withCredentials: true,
+        });
+
+        setUserQuizzes(userQuizzes.filter(quiz => quiz._id !== quizId));
+        console.log('Quiz deleted:', quizId);
+      } catch (error) {
+        setError(error.response?.data?.message || 'Error deleting quiz'); 
+        console.error('Error deleting quiz:', error);
+      }
+    } else {
+      console.log('Quiz deletion cancelled');
     }
-  } else {
-    console.log('Quiz deletion cancelled');
-  }
-};
-
+  };
 
   return (
     <div className="flex flex-col h-[90vh] w-full bg-gradient-to-r from-blue-200 via-green-200 to-purple-200 p-6 mx-3 my-7 mb-7 rounded-md">
@@ -114,6 +118,11 @@ const FacultyPortal = () => {
         <p className="text-center text-gray-800 font-medium">Email: {email}</p>
         <p className="text-center text-gray-800 font-medium">Name: {name}</p>
       </div>
+      {error && (
+        <div className="bg-red-100 text-red-800 border border-red-300 rounded-lg p-4 mb-4">
+          <p className="text-center">{error}</p>
+        </div>
+      )}
       <div className="flex-grow flex">
         <div className="w-1/4 bg-white rounded-lg shadow-md p-4 border border-gray-300 mr-4">
           <label htmlFor="batch" className="block text-gray-700 mb-2">Select Batch</label>
