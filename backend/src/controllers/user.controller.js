@@ -6,6 +6,9 @@ import { Student } from '../models/student.model.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import jwt from 'jsonwebtoken';
 import sgMail from '@sendgrid/mail';
+import dotenv, { config } from 'dotenv'
+
+dotenv.config({ path: '../../.env' });
 
 const baseFrontendUrl = process.env.BASE_FRONTEND_URL || 'http://localhost:5173';
 
