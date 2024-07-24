@@ -9,6 +9,10 @@ const quizSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    location: {
+        type: String,
+        required: true,
+    },
     startTime: {
         type: Date,
         required: true,

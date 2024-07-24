@@ -21,6 +21,7 @@ app.use(cookieParser()); // cookie-parser (Middleware to parse cookies)
 import userRouter from './routes/user.routes.js';
 import courseRouter from './routes/course.routes.js';
 import quizRouter from './routes/quiz.routes.js';
+import locationRouter from './routes/location.routes.js';
 
 // routes declaration
 app.use('/api/v1/users', userRouter);
@@ -28,6 +29,8 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/courses', courseRouter);
 
 app.use('/api/v1/quizzes', quizRouter);
+
+app.use('/api/v1/locations', locationRouter);
 
 // custom made middleware
 const errorHandler = (err, req, res, next) => {

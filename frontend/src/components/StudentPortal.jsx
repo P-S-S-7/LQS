@@ -94,6 +94,7 @@ const StudentPortal = () => {
                   <th className="py-2 px-4 border-r">Course</th>
                   <th className="py-2 px-4 border-r">Start Time</th>
                   <th className="py-2 px-4">End Time</th>
+                  <th className='py-2 px-4'>Location</th>
                 </tr>
               </thead>
               <tbody>
@@ -102,11 +103,12 @@ const StudentPortal = () => {
                   const endDate = new Date(quiz.endTime);
                   const timeOptions = { hour: '2-digit', minute: '2-digit' };
                   return (
-                    <tr key={quiz._id} className="hover:bg-teal-50">
+                    <tr key={quiz._id} className="hover:bg-teal-50 text-center">
                       <td className="py-2 px-4 border-r">{startDate.toLocaleDateString()}</td>
                       <td className="py-2 px-4 border-r">{quiz.course}</td>
                       <td className="py-2 px-4 border-r">{startDate.toLocaleTimeString([], timeOptions)}</td>
                       <td className="py-2 px-4">{endDate.toLocaleTimeString([], timeOptions)}</td>
+                      <td className="py-2 px-4">{quiz.location}</td>
                     </tr>
                   );
                 })}

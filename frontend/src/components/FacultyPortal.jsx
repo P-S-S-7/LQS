@@ -73,6 +73,7 @@ const FacultyPortal = () => {
       setUserQuizzes(sortedQuizzes);
       console.log('User Quizzes:', sortedQuizzes);
       setViewType('user');
+      setBatch('');
     } catch (error) {
       setError(error.response?.data?.message || 'Error fetching user quizzes'); 
       console.error('Error fetching user quizzes:', error);
@@ -167,6 +168,7 @@ const FacultyPortal = () => {
                     <th className="py-2 px-4 border-r">Course</th>
                     <th className="py-2 px-4 border-r">Start Time</th>
                     <th className="py-2 px-4">End Time</th>
+                    <th className='py-2 px-4'>Location</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -175,11 +177,12 @@ const FacultyPortal = () => {
                     const endDate = new Date(quiz.endTime);
                     const timeOptions = { hour: '2-digit', minute: '2-digit' };
                     return (
-                      <tr key={quiz._id} className="hover:bg-purple-50">
+                      <tr key={quiz._id} className="hover:bg-purple-50 text-center">
                         <td className="py-2 px-4 border-r">{startDate.toLocaleDateString()}</td>
                         <td className="py-2 px-4 border-r">{quiz.course}</td>
                         <td className="py-2 px-4 border-r">{startDate.toLocaleTimeString([], timeOptions)}</td>
                         <td className="py-2 px-4">{endDate.toLocaleTimeString([], timeOptions)}</td>
+                        <td className="py-2 px-4">{quiz.location}</td>
                       </tr>
                     );
                   })}
@@ -201,6 +204,7 @@ const FacultyPortal = () => {
                     <th className="py-2 px-4 border-r">Course</th>
                     <th className="py-2 px-4 border-r">Start Time</th>
                     <th className="py-2 px-4">End Time</th>
+                    <th className='py-2 px-4'>Location</th>
                     <th className="py-2 px-4">Actions</th>
                   </tr>
                 </thead>
@@ -210,12 +214,13 @@ const FacultyPortal = () => {
                     const endDate = new Date(quiz.endTime);
                     const timeOptions = { hour: '2-digit', minute: '2-digit' };
                     return (
-                      <tr key={quiz._id} className="hover:bg-blue-50">
+                      <tr key={quiz._id} className="hover:bg-blue-50 text-center">
                         <td className="py-2 px-4 border-r">{startDate.toLocaleDateString()}</td>
                         <td className="py-2 px-4 border-r">{quiz.batch}</td>
                         <td className="py-2 px-4 border-r">{quiz.course}</td>
                         <td className="py-2 px-4 border-r">{startDate.toLocaleTimeString([], timeOptions)}</td>
                         <td className="py-2 px-4">{endDate.toLocaleTimeString([], timeOptions)}</td>
+                        <td className="py-2 px-4">{quiz.location}</td>
                         <td className="py-2 px-4">
                           <button
                             onClick={() => handleDeleteQuiz(quiz._id)}

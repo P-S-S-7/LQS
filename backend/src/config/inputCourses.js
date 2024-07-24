@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { Course } from '../models/course.model.js';
 import { DB_NAME } from '../constants.js';
 
-dotenv.config({path: "../.env"});
+dotenv.config({path: "../../.env"});
 
 const courses = [
     { name: 'Course1(18)', batch: 'Y-18' },

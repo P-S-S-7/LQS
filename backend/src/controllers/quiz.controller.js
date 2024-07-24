@@ -6,10 +6,10 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 // Schedule a quiz
 const scheduleQuiz = asyncHandler(async (req, res, next) => {
   try {
-    const { batch, course, startTime, endTime } = req.body;
+    const { batch, course, startTime, endTime, location } = req.body;
     const scheduledBy = req.user._id;
   
-    if (!batch || !course || !startTime || !endTime) {
+    if (!batch || !course || !startTime || !endTime || !location) {
       throw new ApiError(400, 'All fields are required');
     }
   
@@ -20,16 +20,28 @@ const scheduleQuiz = asyncHandler(async (req, res, next) => {
     const conflictingQuizzes = await Quiz.find({
       batch,
       $or: [
-        { startTime: { $lte: new Date(endTime), $gte: new Date(startTime) } },
-        { endTime: { $lte: new Date(endTime), $gte: new Date(startTime) } },
+        { startTime: { $lt: new Date(endTime), $gt: new Date(startTime) } },
+        { endTime: { $lt: new Date(endTime), $gt: new Date(startTime) } },
       ],
     });
   
     if (conflictingQuizzes.length > 0) {
       throw new ApiError(400, `The selected time interval conflicts with another quiz scheduled for ${batch} batch. Please check the quizzes scheduled for this batch and try again.`);
     }
+
+    const conflictingLocations = await Quiz.find({
+      location,
+      $or: [
+        { startTime: { $lt: new Date(endTime), $gt: new Date(startTime) } },
+        { endTime: { $lt: new Date(endTime), $gt: new Date(startTime) } },
+      ],
+    });
+
+    if (conflictingLocations.length > 0) {
+      throw new ApiError(400, `${location} is already booked for another quiz at the selected time. Please select a different location or time.`);
+    }
   
-    const newQuiz = await Quiz.create({ batch, course, startTime, endTime, scheduledBy });
+    const newQuiz = await Quiz.create({ batch, course, location, startTime, endTime, scheduledBy });
     res.status(201).json(new ApiResponse(201, newQuiz));
   } catch (error) {
       next(error);

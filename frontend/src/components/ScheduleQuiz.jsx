@@ -9,6 +9,8 @@ const ScheduleQuiz = () => {
   const [batch, setBatch] = useState('');
   const [course, setCourse] = useState('');
   const [courses, setCourses] = useState([]);
+  const [location, setLocation] = useState('');
+  const [locations, setLocations] = useState([]);
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [error, setError] = useState('');
@@ -37,6 +39,24 @@ const ScheduleQuiz = () => {
     }
   }, [batch]);
 
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await axios.get(`${REACT_APP_API_URI}/locations`, {
+          withCredentials: true
+        });
+
+        console.log('Locations:', response.data);
+
+        setLocations(response.data.data);
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+      }
+    };
+
+    fetchLocations();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -58,6 +78,7 @@ const ScheduleQuiz = () => {
       const response = await axios.post(`${REACT_APP_API_URI}/quizzes/schedule`, {
         batch,
         course,
+        location,
         startTime,
         endTime,
       }, {
@@ -105,6 +126,21 @@ const ScheduleQuiz = () => {
             <option value="">Select Course</option>
             {courses.map((course) => (
               <option key={course.id} value={course.name}>{course.name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="location" className="block text-gray-700 mb-2">Select Location</label>
+          <select
+            id="location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg p-2"
+            disabled={!course}
+          >
+            <option value="">Select Location</option>
+            {locations.map((location) => (
+              <option key={location.id} value={location.name}>{location.name}</option>
             ))}
           </select>
         </div>
