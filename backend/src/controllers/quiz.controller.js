@@ -8,23 +8,27 @@ const scheduleQuiz = asyncHandler(async (req, res, next) => {
   try {
     const { batch, course, startTime, endTime, location } = req.body;
     const scheduledBy = req.user._id;
-  
+
     if (!batch || !course || !startTime || !endTime || !location) {
       throw new ApiError(400, 'All fields are required');
     }
-  
-    if (new Date(startTime) >= new Date(endTime)) {
+
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+
+    if (start >= end) {
       throw new ApiError(400, 'End time must be after the start time');
     }
-  
+
     const conflictingQuizzes = await Quiz.find({
       batch,
       $or: [
-        { startTime: { $lt: new Date(endTime), $gt: new Date(startTime) } },
-        { endTime: { $lt: new Date(endTime), $gt: new Date(startTime) } },
+        { startTime: { $lte: end, $gte: start } },
+        { endTime: { $lte: end, $gte: start } },
+        { startTime: { $lte: start }, endTime: { $gte: end } }
       ],
     });
-  
+
     if (conflictingQuizzes.length > 0) {
       throw new ApiError(400, `The selected time interval conflicts with another quiz scheduled for ${batch} batch. Please check the quizzes scheduled for this batch and try again.`);
     }
@@ -32,21 +36,24 @@ const scheduleQuiz = asyncHandler(async (req, res, next) => {
     const conflictingLocations = await Quiz.find({
       location,
       $or: [
-        { startTime: { $lt: new Date(endTime), $gt: new Date(startTime) } },
-        { endTime: { $lt: new Date(endTime), $gt: new Date(startTime) } },
+        { startTime: { $lte: end, $gte: start } },
+        { endTime: { $lte: end, $gte: start } },
+        { startTime: { $lte: start }, endTime: { $gte: end } }
       ],
     });
 
     if (conflictingLocations.length > 0) {
       throw new ApiError(400, `${location} is already booked for another quiz at the selected time. Please select a different location or time.`);
     }
-  
-    const newQuiz = await Quiz.create({ batch, course, location, startTime, endTime, scheduledBy });
+
+    // Create and save the new quiz
+    const newQuiz = await Quiz.create({ batch, course, location, startTime: start, endTime: end, scheduledBy });
     res.status(201).json(new ApiResponse(201, newQuiz));
   } catch (error) {
-      next(error);
+    next(error);
   }
 });
+
 
 // Get quizzes by batch
 const getQuizzesByBatch = asyncHandler(async (req, res, next) => {

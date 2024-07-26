@@ -6,6 +6,9 @@ import { Student } from '../models/student.model.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import jwt from 'jsonwebtoken';
 import sgMail from '@sendgrid/mail';
+import dotenv, { config } from 'dotenv'
+
+dotenv.config({ path: '../../.env' });
 
 const baseFrontendUrl = process.env.BASE_FRONTEND_URL || 'http://localhost:5173';
 
@@ -193,7 +196,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
         const options = {
             httpOnly: true,
             secure: true,
-            path: "/",
+            sameSite: "None",
         };
 
         res
@@ -233,7 +236,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     const options = {
         httpOnly: true,
         secure: true,
-        path: "/",
+        sameSite: "None",
     }
 
     return res.status(200)
@@ -365,7 +368,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 });
 
 // reset password
-const resetPassword = asyncHandler(async (req, res) => {
+const resetPassword = asyncHandler(async (req, res, next) => {
     try {
         const { token } = req.params;
         const { password } = req.body;
