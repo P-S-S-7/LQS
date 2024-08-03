@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Logout from './Logout';
-import { REACT_APP_API_URI } from '../constants.js';
 
 const FacultyPortal = () => {
   const [name, setName] = useState('');
@@ -17,7 +16,7 @@ const FacultyPortal = () => {
   useEffect(() => {
     const fetchEmail = async () => {
       try {
-        const response = await axios.get(`${REACT_APP_API_URI}/users/user-details`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/users/user-details`, {
           withCredentials: true,  // httpOnly cookies are sent automatically with axios requests
         });
         setEmail(response.data.data.email);

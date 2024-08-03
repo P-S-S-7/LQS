@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { REACT_APP_API_URI } from '../constants.js';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 function Login() {
@@ -33,8 +32,9 @@ function Login() {
         }
 
         try {
-            console.log('Submitting form with:', { email, password, role });
-            const response = await axios.post(`${REACT_APP_API_URI}/users/login`, {
+
+            console.log('Submitting form with:', { email, password, role },import.meta.env.VITE_API_URL);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, {
                 email,
                 password,
                 role

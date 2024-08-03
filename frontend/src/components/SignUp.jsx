@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-import { REACT_APP_API_URI, passwordRegex, studentEmailRegex, nameRegex } from '../constants.js';
+import { passwordRegex, studentEmailRegex, nameRegex } from '../constants.js';
 
 const Signup = () => {
     const [name, setName] = useState('');
@@ -85,7 +85,7 @@ const Signup = () => {
         }
 
         try {
-            const response = await axios.post(`${REACT_APP_API_URI}/users/signup`, {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/signup`, {
                 name,
                 email,
                 password,

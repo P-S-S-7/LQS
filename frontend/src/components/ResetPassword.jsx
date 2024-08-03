@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { passwordRegex, REACT_APP_API_URI } from '../constants';
+import { passwordRegex } from '../constants';
 
 function ResetPassword() {
     const { token } = useParams();
@@ -28,7 +28,7 @@ function ResetPassword() {
         }
 
         try {
-            const response = await axios.post(`${REACT_APP_API_URI}/users/reset-password/${token}`, { password });
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/reset-password/${token}`, { password });
             setMessage(response.data.message);
 
             console.log(response.data);

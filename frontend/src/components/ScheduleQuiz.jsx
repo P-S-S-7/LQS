@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { REACT_APP_API_URI } from '../constants.js';
 import { useNavigate } from 'react-router-dom'; 
 
 const ScheduleQuiz = () => {
@@ -22,7 +21,7 @@ const ScheduleQuiz = () => {
     if (batch) {
       const fetchCourses = async () => {
         try {
-          const response = await axios.get(`${REACT_APP_API_URI}/courses`, {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/courses`, {
             params: { batch },
             withCredentials: true
           });
@@ -42,7 +41,7 @@ const ScheduleQuiz = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await axios.get(`${REACT_APP_API_URI}/locations`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/locations`, {
           withCredentials: true
         });
 
@@ -75,7 +74,7 @@ const ScheduleQuiz = () => {
     }
 
     try {
-      const response = await axios.post(`${REACT_APP_API_URI}/quizzes/schedule`, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/quizzes/schedule`, {
         batch,
         course,
         location,

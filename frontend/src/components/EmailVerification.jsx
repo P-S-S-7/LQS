@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { REACT_APP_API_URI } from '../constants';
 
 const EmailVerification = () => {
     const { token } = useParams();
@@ -22,7 +21,7 @@ const EmailVerification = () => {
         setMessage('');
         console.log(token);
         try {
-            await axios.post(`${REACT_APP_API_URI}/users/verify-email/${token}`);
+            await axios.post(`${import.meta.env.VITE_API_URL}/users/verify-email/${token}`);
             setMessage('Your email has been verified successfully! Redirecting to login...');
             setTimeout(() => navigate('/login'), 5000);
         } catch (error) {

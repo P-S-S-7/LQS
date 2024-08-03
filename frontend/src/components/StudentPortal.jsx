@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Logout from './Logout';
-import { REACT_APP_API_URI } from '../constants.js';
 
 const StudentPortal = () => {
   const [name, setName] = useState('');
@@ -13,7 +12,7 @@ const StudentPortal = () => {
   useEffect(() => {
     const fetchEmail = async () => {
       try {
-        const response = await axios.get(`${REACT_APP_API_URI}/users/user-details`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/users/user-details`, {
           withCredentials: true, // httpOnly cookies are sent automatically with axios requests
         });
         setEmail(response.data.data.email);
@@ -30,7 +29,7 @@ const StudentPortal = () => {
     if (batch) {
       const fetchQuizzes = async () => {
         try {
-          const response = await axios.get(`${REACT_APP_API_URI}/quizzes/batch`, {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/quizzes/batch`, {
             withCredentials: true,
             params: { batch },
           });
