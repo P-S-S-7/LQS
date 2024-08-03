@@ -16,6 +16,11 @@ app.use(express.json({ limit: "16kb" })); // body-parser (Middleware to parse JS
 app.use(express.urlencoded({ extended: true, limit: "16kb" })); // body-parser (Middleware to parse URL-encoded data)
 app.use(cookieParser()); // cookie-parser (Middleware to parse cookies)
 
+app.get('/api/v1/health', (req, res) => {
+  res.status(200).json({ message: 'Server is running' });
+}
+);
+
 
 // import routes
 import userRouter from './routes/user.routes.js';
