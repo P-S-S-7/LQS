@@ -17,9 +17,8 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" })); // body-parser (
 app.use(cookieParser()); // cookie-parser (Middleware to parse cookies)
 
 app.get('/api/v1/health', (req, res) => {
-  res.status(200).json({ message: 'Server is running' });
-}
-);
+  res.status(200).json({ status: 'ok' });
+});
 
 
 // import routes

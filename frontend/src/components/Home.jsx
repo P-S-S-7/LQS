@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../assets/lnmiit.png';
+import Loader from './Loader';
 
 function Home() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-
     const handleClick = async () => {
         setLoading(true);
         try {
@@ -25,6 +25,7 @@ function Home() {
             setLoading(false);
         }
     };
+    
 
     return (
         <div style={{ maxWidth: '700px', width: '100%', padding: '20px', background: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px' }}>
@@ -38,31 +39,14 @@ function Home() {
                         disabled={loading}
                     >
                         {loading ? (
-                            <span className="loader"></span>
+                            <Loader /> 
                         ) : (
-                            <strong>GET STARTED</strong>
+                            <strong>LOGIN</strong>
                         )}
                     </button>
                 </div>
                 <footer className="text-center text-gray-300 py-2">@created by ~pss</footer>
             </section>
-            <style>
-                {`
-                    .loader {
-                        border: 4px solid rgba(255, 255, 255, 0.1);
-                        border-radius: 50%;
-                        border-top: 4px solid #fff;
-                        width: 24px;
-                        height: 24px;
-                        animation: spin 1s linear infinite;
-                    }
-
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                `}
-            </style>
         </div>
     );
 }

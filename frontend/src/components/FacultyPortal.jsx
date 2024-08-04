@@ -10,32 +10,44 @@ const FacultyPortal = () => {
   const [quizzes, setQuizzes] = useState([]);
   const [userQuizzes, setUserQuizzes] = useState([]);
   const [viewType, setViewType] = useState('batch');
-  const [error, setError] = useState(''); 
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-
+  
   useEffect(() => {
-    const fetchEmail = async () => {
+    const checkLoggedInAndFetchDetails = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/users/user-details`, {
-          withCredentials: true,  // httpOnly cookies are sent automatically with axios requests
+        // check if user is logged in
+        const verifyResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users/verify-user`, { withCredentials: true });
+        if (verifyResponse.status === 401) {
+          navigate('/login');
+          return;
+        }
+        
+        // fetch user details if logged in
+        const userDetailsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users/user-details`, {
+          withCredentials: true, // httpOnly cookies are sent automatically with axios requests
         });
-        setEmail(response.data.data.email);
-        setName(response.data.data.name);
-        console.log('Response Data:', response.data);
+        setEmail(userDetailsResponse.data.data.email);
+        setName(userDetailsResponse.data.data.name);
+        console.log('User Details Response:', userDetailsResponse.data);
       } catch (error) {
-        setError(error.response?.data?.message || 'Error fetching user details'); 
-        console.error('Error fetching user details:', error);
+        if (error.response && error.response.status === 401) {
+          navigate('/login');
+        } else {
+          setError(error.response?.data?.message || 'Error fetching user details');
+          console.error('Error fetching user details:', error);
+        }
       }
     };
 
-    fetchEmail();
-  }, []);
+    checkLoggedInAndFetchDetails();
+  }, [navigate]);
 
   useEffect(() => {
     if (batch && viewType === 'batch') {
       const fetchQuizzes = async () => {
         try {
-          const response = await axios.get(`${REACT_APP_API_URI}/quizzes/batch`, {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/quizzes/batch`, {
             withCredentials: true,
             params: { batch },
           });
@@ -49,7 +61,7 @@ const FacultyPortal = () => {
           setQuizzes(sortedQuizzes);
           console.log('Quizzes:', sortedQuizzes);
         } catch (error) {
-          setError(error.response?.data?.message || 'Error fetching quizzes'); 
+          setError(error.response?.data?.message || 'Error fetching quizzes');
           console.error('Error fetching quizzes:', error);
         }
       };
@@ -64,7 +76,7 @@ const FacultyPortal = () => {
 
   const handleFetchUserQuizzes = async () => {
     try {
-      const response = await axios.get(`${REACT_APP_API_URI}/quizzes/user`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/quizzes/user`, {
         withCredentials: true,
       });
       const sortedQuizzes = response.data.data;
@@ -74,7 +86,7 @@ const FacultyPortal = () => {
       setViewType('user');
       setBatch('');
     } catch (error) {
-      setError(error.response?.data?.message || 'Error fetching user quizzes'); 
+      setError(error.response?.data?.message || 'Error fetching user quizzes');
       console.error('Error fetching user quizzes:', error);
     }
   };
@@ -89,14 +101,14 @@ const FacultyPortal = () => {
 
     if (isConfirmed) {
       try {
-        await axios.delete(`${REACT_APP_API_URI}/quizzes/delete/${quizId}`, {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/quizzes/delete/${quizId}`, {
           withCredentials: true,
         });
 
         setUserQuizzes(userQuizzes.filter(quiz => quiz._id !== quizId));
         console.log('Quiz deleted:', quizId);
       } catch (error) {
-        setError(error.response?.data?.message || 'Error deleting quiz'); 
+        setError(error.response?.data?.message || 'Error deleting quiz');
         console.error('Error deleting quiz:', error);
       }
     } else {
@@ -105,9 +117,9 @@ const FacultyPortal = () => {
   };
 
   return (
-    <div className="flex flex-col h-[90vh] w-full bg-gradient-to-r from-blue-200 via-green-200 to-purple-200 p-6 mx-3 my-7 mb-7 rounded-md">
+    <div className="flex flex-col h-[90vh] w-full bg-gradient-to-r from-teal-100 via-pink-100 to-yellow-100 p-6 mx-3 my-7 mb-7 rounded-md">
       <div className="relative mb-6">
-        <h1 className="text-3xl font-bold text-center text-purple-800 mb-2">
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-2">
           Faculty Portal
         </h1>
         <div className="absolute top-0 right-0 mt-2 mr-2">
@@ -115,8 +127,8 @@ const FacultyPortal = () => {
         </div>
       </div>
       <div className="bg-white rounded-lg shadow-md p-4 border border-gray-300 mb-4">
-        <p className="text-center text-gray-800 font-medium">Email: {email}</p>
-        <p className="text-center text-gray-800 font-medium">Name: {name}</p>
+        <p className="text-center text-gray-700 font-medium">Email: {email}</p>
+        <p className="text-center text-gray-700 font-medium">Name: {name}</p>
       </div>
       {error && (
         <div className="bg-red-100 text-red-800 border border-red-300 rounded-lg p-4 mb-4">
@@ -130,7 +142,7 @@ const FacultyPortal = () => {
             id="batch"
             value={batch}
             onChange={handleBatchChange}
-            className="w-full border border-gray-300 rounded-lg p-2 bg-blue-50 text-gray-700"
+            className="w-full border border-gray-300 rounded-lg p-2 bg-gray-50 text-gray-700"
           >
             <option value="">Select Batch</option>
             <option value="Y-18">Y-18</option>
@@ -143,13 +155,13 @@ const FacultyPortal = () => {
           </select>
           <button
             onClick={handleNavigateToScheduleQuiz}
-            className="mt-4 w-full bg-purple-500 text-white py-2 rounded-lg hover:bg-purple-600"
+            className="mt-4 w-full text-white py-2 rounded-lg bg-gradient-to-r from-emerald-400 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600"
           >
             Schedule Quiz
           </button>
           <button
             onClick={handleFetchUserQuizzes}
-            className="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+            className="mt-4 w-full text-white py-2 rounded-lg bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600"
           >
             View Your Scheduled Quizzes
           </button>
@@ -157,12 +169,12 @@ const FacultyPortal = () => {
         <div className="flex-grow bg-white rounded-lg shadow-md p-4 border border-gray-300">
           {viewType === 'batch' && batch && quizzes.length > 0 ? (
             <>
-              <h2 className="text-center text-xl font-bold text-purple-800 mb-4">
+              <h2 className="text-center text-xl font-bold text-gray-800 mb-4">
                 Quizzes for Batch {batch}
               </h2>
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-purple-100 text-purple-800 border-b">
+                  <tr className="bg-teal-100 text-teal-800 border-b">
                     <th className="py-2 px-4 border-r">Date</th>
                     <th className="py-2 px-4 border-r">Course</th>
                     <th className="py-2 px-4 border-r">Start Time</th>
@@ -176,7 +188,7 @@ const FacultyPortal = () => {
                     const endDate = new Date(quiz.endTime);
                     const timeOptions = { hour: '2-digit', minute: '2-digit' };
                     return (
-                      <tr key={quiz._id} className="hover:bg-purple-50 text-center">
+                      <tr key={quiz._id} className="hover:bg-teal-50 text-center">
                         <td className="py-2 px-4 border-r">{startDate.toLocaleDateString()}</td>
                         <td className="py-2 px-4 border-r">{quiz.course}</td>
                         <td className="py-2 px-4 border-r">{startDate.toLocaleTimeString([], timeOptions)}</td>
@@ -192,18 +204,16 @@ const FacultyPortal = () => {
             <p className="text-center text-gray-700">No quizzes scheduled for this batch.</p>
           ) : viewType === 'user' && userQuizzes.length > 0 ? (
             <>
-              <h2 className="text-center text-xl font-bold text-blue-800 mb-4">
+              <h2 className="text-center text-xl font-bold text-gray-800 mb-4">
                 Your Scheduled Quizzes
               </h2>
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-blue-100 text-blue-800 border-b">
+                  <tr className="bg-pink-100 text-pink-800 border-b">
                     <th className="py-2 px-4 border-r">Date</th>
-                    <th className="py-2 px-4 border-r">Batch</th>
                     <th className="py-2 px-4 border-r">Course</th>
                     <th className="py-2 px-4 border-r">Start Time</th>
                     <th className="py-2 px-4">End Time</th>
-                    <th className='py-2 px-4'>Location</th>
                     <th className="py-2 px-4">Actions</th>
                   </tr>
                 </thead>
@@ -213,17 +223,15 @@ const FacultyPortal = () => {
                     const endDate = new Date(quiz.endTime);
                     const timeOptions = { hour: '2-digit', minute: '2-digit' };
                     return (
-                      <tr key={quiz._id} className="hover:bg-blue-50 text-center">
+                      <tr key={quiz._id} className="hover:bg-pink-50 text-center">
                         <td className="py-2 px-4 border-r">{startDate.toLocaleDateString()}</td>
-                        <td className="py-2 px-4 border-r">{quiz.batch}</td>
                         <td className="py-2 px-4 border-r">{quiz.course}</td>
                         <td className="py-2 px-4 border-r">{startDate.toLocaleTimeString([], timeOptions)}</td>
                         <td className="py-2 px-4">{endDate.toLocaleTimeString([], timeOptions)}</td>
-                        <td className="py-2 px-4">{quiz.location}</td>
                         <td className="py-2 px-4">
                           <button
                             onClick={() => handleDeleteQuiz(quiz._id)}
-                            className="bg-red-500 text-white py-1 px-2 rounded-lg hover:bg-red-600"
+                            className="bg-red-400 text-white px-4 py-2 rounded-lg hover:bg-red-500"
                           >
                             Delete
                           </button>
@@ -234,9 +242,9 @@ const FacultyPortal = () => {
                 </tbody>
               </table>
             </>
-          ) : viewType === 'user' ? (
-            <p className="text-center text-gray-700">No quizzes scheduled by you.</p>
-          ) : null}
+          ) : (
+            <p className="text-center text-gray-700">No quizzes scheduled.</p>
+          )}
         </div>
       </div>
     </div>

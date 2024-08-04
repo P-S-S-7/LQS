@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
@@ -10,6 +10,23 @@ function Login() {
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkLoggedIn = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/users/verify-user`, { withCredentials: true });
+                if (response.data.role === 'Student') {
+                    navigate('/student-portal');
+                } else if (response.data.role === 'Faculty') {
+                    navigate('/faculty-portal');
+                }
+            } catch (error) {
+                console.log('User not logged in:', error.response?.data || error.message);
+            }
+        };
+
+        checkLoggedIn();
+    }, [navigate]);
 
     const handleRoleChange = (e) => {
         setRole(e.target.value);
@@ -32,7 +49,6 @@ function Login() {
         }
 
         try {
-
             console.log('Submitting form with:', { email, password, role });
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/login`, {
                 email,
@@ -57,7 +73,6 @@ function Login() {
             setError(error.response?.data?.message || 'Invalid credentials');
         }
     };
-
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -148,7 +163,7 @@ function Login() {
                                 <div>
                                     <button
                                         type="submit"
-                                        className="w-full h-10 flex items-center justify-center rounded-md bg-gradient-to-br from-purple-700 to-blue-700 text-white px-3.5 py-2.5 font-semibold leading-7 hover:opacity-90"
+                                        className="w-full h-10 flex items-center justify-center rounded-md bg-gradient-to-br from-purple-900 to-blue-900 text-white px-3.5 py-2.5 font-semibold leading-7 hover:opacity-90"
                                     >
                                         Login{' '}
                                         <svg

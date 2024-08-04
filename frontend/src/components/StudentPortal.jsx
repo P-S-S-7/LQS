@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Logout from './Logout';
+import { useNavigate } from 'react-router-dom';
 
 const StudentPortal = () => {
   const [name, setName] = useState('');
@@ -8,22 +9,37 @@ const StudentPortal = () => {
   const [batch, setBatch] = useState('');
   const [quizzes, setQuizzes] = useState([]);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchEmail = async () => {
+    const checkLoggedInAndFetchDetails = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/users/user-details`, {
+        // check if user is logged in
+        const verifyResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users/verify-user`, { withCredentials: true });
+        if (verifyResponse.status === 401) {
+          navigate('/login');
+          return;
+        }
+        
+        // fetch user details if logged in
+        const userDetailsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users/user-details`, {
           withCredentials: true, // httpOnly cookies are sent automatically with axios requests
         });
-        setEmail(response.data.data.email);
-        setName(response.data.data.name);
+        setEmail(userDetailsResponse.data.data.email);
+        setName(userDetailsResponse.data.data.name);
+        console.log('User Details Response:', userDetailsResponse.data);
       } catch (error) {
-        setError(error.response?.data?.message || 'Error fetching user details'); 
+        if (error.response && error.response.status === 401) {
+          navigate('/login');
+        } else {
+          setError(error.response?.data?.message || 'Error fetching user details');
+          console.error('Error fetching user details:', error);
+        }
       }
     };
 
-    fetchEmail();
-  }, []);
+    checkLoggedInAndFetchDetails();
+  }, [navigate]);
 
   useEffect(() => {
     if (batch) {
@@ -51,28 +67,28 @@ const StudentPortal = () => {
   }, [batch]);
 
   return (
-    <div className="flex flex-col h-[90vh] w-full bg-gradient-to-r from-blue-100 via-teal-100 to-lime-100 p-6 mx-3 my-7 mb-7 rounded-md">
+    <div className="flex flex-col h-[90vh] w-full bg-gradient-to-r from-purple-100 via-pink-100 to-yellow-100 p-6 mx-3 my-7 mb-7 rounded-lg shadow-lg">
       <div className="relative mb-6">
-        <h1 className="text-3xl font-bold text-center text-indigo-800 mb-2">
+        <h1 className="text-4xl font-extrabold text-center text-gray-800 mb-4">
           Student Portal
         </h1>
         <div className="absolute top-0 right-0 mt-2 mr-2">
           <Logout />
         </div>
       </div>
-      <div className="bg-white rounded-lg shadow-md p-4 border border-gray-300 mb-4">
-        {error && <p className="text-red-600 text-center">{error}</p>} 
-        <p className="text-center text-gray-800 font-medium">Email: {email}</p>
-        <p className="text-center text-gray-800 font-medium">Name: {name}</p>
+      <div className="bg-white rounded-lg shadow-lg p-4 border border-gray-300 mb-4">
+        {error && <p className="text-red-700 text-center font-medium">{error}</p>} 
+        <p className="text-center text-gray-900 font-semibold">Email: {email}</p>
+        <p className="text-center text-gray-900 font-semibold">Name: {name}</p>
       </div>
       <div className="flex-grow flex">
-        <div className="w-1/4 bg-white rounded-lg shadow-md p-4 border border-gray-300 mr-4">
-          <label htmlFor="batch" className="block text-gray-700 mb-2">Select Batch</label>
+        <div className="w-1/4 bg-white rounded-lg shadow-lg p-4 border border-gray-300 mr-4">
+          <label htmlFor="batch" className="block text-gray-800 mb-2 font-semibold">Select Batch</label>
           <select 
             id="batch" 
             value={batch}
             onChange={(e) => setBatch(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg p-2 bg-blue-50 text-gray-700"
+            className="w-full border border-gray-400 rounded-lg p-2 bg-teal-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <option value="">Select Batch</option>
             <option value="Y-18">Y-18</option>
@@ -84,11 +100,11 @@ const StudentPortal = () => {
             <option value="Y-24">Y-24</option>
           </select>
         </div>
-        <div className="flex-grow bg-white rounded-lg shadow-md p-4 border border-gray-300">
+        <div className="flex-grow bg-white rounded-lg shadow-lg p-4 border border-gray-300">
           {quizzes.length > 0 ? (
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-teal-200 text-teal-800 border-b">
+                <tr className="bg-teal-300 text-teal-900 border-b">
                   <th className="py-2 px-4 border-r">Date</th>
                   <th className="py-2 px-4 border-r">Course</th>
                   <th className="py-2 px-4 border-r">Start Time</th>
@@ -114,7 +130,7 @@ const StudentPortal = () => {
               </tbody>
             </table>
           ) : (
-            <p className="text-center text-gray-600">No quizzes scheduled for this batch.</p>
+            <p className="text-center text-gray-700">No quizzes scheduled for this batch.</p>
           )}
         </div>
       </div>

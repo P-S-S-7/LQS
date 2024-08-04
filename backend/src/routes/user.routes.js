@@ -8,6 +8,17 @@ router.route("/signup").post(signUpUser);
 router.route("/verify-email/:token").post(verifyEmail);
 
 router.route("/login").post(loginUser);
+router.route("/verify-user").get(verifyJWT, (req, res) => {
+    const user = req.user;
+    if (user) {
+        res.status(200).json({ role: user.role });
+    }
+    else {
+        res.status(401).json({ message: "Unauthorized access" });
+    }
+})
+
+
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password/:token").post(resetPassword);
 
