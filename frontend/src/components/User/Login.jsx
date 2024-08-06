@@ -15,10 +15,15 @@ function Login() {
     useEffect(() => {
         const checkLoggedIn = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/users/verify-user`, { withCredentials: true });
-                if (response.data.role === 'Student') {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/users/user-details`, {
+                    withCredentials: true
+                });
+
+                if (response.data.data.role === 'Student') {
                     navigate('/student-portal');
-                } else if (response.data.role === 'Faculty') {
+                }
+                
+                if (response.data.data.role === 'Faculty') {
                     navigate('/faculty-portal');
                 }
             } catch (error) {

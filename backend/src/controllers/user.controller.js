@@ -307,14 +307,13 @@ const getUserDetails = asyncHandler(async (req, res, next) => {
         const user = await User.findById(req.user._id).select("-password -refreshToken");
     
         if (!user) {
-            throw new ApiError(404, "User not found");
+            throw new ApiError(401, "Unauthorized access");
         }
-    
-        // extract email and name from the user
     
         const sendUser = {
             email: user.email,
-            name: user.name
+            name: user.name,
+            role: user.role
         }
     
         return res.status(200).json(

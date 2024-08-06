@@ -9,7 +9,7 @@ import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
 
 const StudentPortal = () => {
   const [name, setName] = useState('');
-  const [role, setRole] = useState('Student');
+  const [role, setRole] = useState('');
   const [email, setEmail] = useState('');
   const [batch, setBatch] = useState('');
   const [quizzes, setQuizzes] = useState([]);
@@ -20,17 +20,17 @@ const StudentPortal = () => {
   useEffect(() => {
     const checkLoggedInAndFetchDetails = async () => {
       try {
-        const verifyResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users/verify-user`, { withCredentials: true });
-        if (verifyResponse.status === 401) {
-          navigate('/login');
-          return;
-        }
-
         const userDetailsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users/user-details`, {
           withCredentials: true,
         });
+
+        if (userDetailsResponse.data.data.role !== 'Student') {
+          navigate('/login');
+        }
+
         setEmail(userDetailsResponse.data.data.email);
         setName(userDetailsResponse.data.data.name);
+        setRole(userDetailsResponse.data.data.role);
         console.log('User Details Response:', userDetailsResponse.data);
       } catch (error) {
         if (error.response && error.response.status === 401) {

@@ -11,7 +11,7 @@ import DeleteConfirmation from './SubComponents/DeleteConfirmation';
 const FacultyPortal = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('Faculty');
+  const [role, setRole] = useState('');
   const [batch, setBatch] = useState('');
   const [quizzes, setQuizzes] = useState([]);
   const [userQuizzes, setUserQuizzes] = useState([]);
@@ -26,15 +26,15 @@ const FacultyPortal = () => {
   useEffect(() => {
     const checkLoggedInAndFetchDetails = async () => {
       try {
-        const verifyResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users/verify-user`, { withCredentials: true });
-        if (verifyResponse.status === 401) {
+        const userDetailsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users/user-details`, { withCredentials: true });
+
+        if(userDetailsResponse.data.data.role !== 'Faculty') {
           navigate('/login');
-          return;
         }
 
-        const userDetailsResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users/user-details`, { withCredentials: true });
         setEmail(userDetailsResponse.data.data.email);
         setName(userDetailsResponse.data.data.name);
+        setRole(userDetailsResponse.data.data.role);
       } catch (error) {
         if (error.response && error.response.status === 401) {
           navigate('/login');
