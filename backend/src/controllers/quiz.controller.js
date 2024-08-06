@@ -70,6 +70,7 @@ const getQuizzesByBatch = asyncHandler(async (req, res, next) => {
   }
 });
 
+
 // Get quizzes by user
 const getQuizzesByUser = asyncHandler(async (req, res) => {
   const quizzes = await Quiz.find({ scheduledBy: req.user._id }).sort({ batch: 1, startTime: 1 });

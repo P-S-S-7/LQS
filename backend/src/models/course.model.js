@@ -6,10 +6,6 @@ const courseSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    batch: {
-        type: String,
-        required: true,
-    },
 },
 {
     timestamps: true,

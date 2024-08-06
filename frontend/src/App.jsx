@@ -1,27 +1,29 @@
 import React from 'react';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from 'react-router-dom';
-import  {Layout } from './Template/Layout.jsx';
-import Home from './components/Home';
-import Login from './components/Login';
-import SignUp from './components/SignUp';
-import ForgotPassword from './components/ForgotPassword';
-import ResetPassword from './components/ResetPassword';
-import StudentPortal from './components/StudentPortal';
-import FacultyPortal from './components/FacultyPortal';
-import ScheduleQuiz from './components/ScheduleQuiz';
-import EmailVerification from './components/EmailVerification';
+import Login from './components/User/Login';
+import SignUp from './components/User/SignUp';
+import ForgotPassword from './components/User/ForgotPassword';
+import ResetPassword from './components/User/ResetPassword';
+import StudentPortal from './components/Dashboard/StudentPortal';
+import FacultyPortal from './components/Dashboard/FacultyPortal';
+import ScheduleQuiz from './components/Dashboard/SubComponents/ScheduleQuiz';
+import EmailVerification from './components/User/EmailVerification';
+import { Layout } from './Template/Layout';
+import Loader from './components/Loader';
 
 
 const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<Layout/>} >,
-        <Route path="" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/verify-email/:token" element={<EmailVerification />} />
+      <Route>
+        <Route path="/" element={<Loader />} />
+        <Route element={<Layout />} >
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/verify-email/:token" element={<EmailVerification />} />
 
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+        </Route>
 
         <Route path="/student-portal" element={<StudentPortal />} />
         <Route path="/faculty-portal" element={<FacultyPortal />} />

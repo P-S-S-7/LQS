@@ -1,54 +1,36 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import logo from '../assets/lnmiit.png';
-import Loader from './Loader';
+import { motion } from 'framer-motion';
 
-function Home() {
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
-    const handleClick = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/health`);
-            
-            if (response.status === 200) {
-                navigate('/login');
-            } else {
-                console.error('Backend connection failed');
-                alert('Failed to connect to the backend. Please try again later.');
-            }
-        } catch (error) {
-            console.error('Error connecting to the backend', error);
-            alert('Failed to connect to the backend. Please try again later.');
-        } finally {
-            setLoading(false);
-        }
-    };
-    
-
+const Home = ({ children }) => {
     return (
-        <div style={{ maxWidth: '700px', width: '100%', padding: '20px', background: 'rgba(255, 255, 255, 0.9)', borderRadius: '8px' }}>
-            <section className="flex flex-col items-center justify-center bg-gradient-to-br from-purple-400 to-blue-400 text-white rounded-lg">
-                <div className="flex flex-col items-center justify-center p-4 text-center">
-                    <h3 className="text-4xl md:text-5xl font-bold mb-4">LNMIIT Quiz Scheduler</h3>
-                    <img src={logo} alt="LNMIIT Logo" className="rounded-full h-32 w-32 md:h-40 md:w-40 object-cover mb-4" />
-                    <button
-                        onClick={handleClick}
-                        className="bg-gradient-to-br from-purple-700 to-blue-500 text-gray-800 py-2 px-6 rounded-lg shadow-md transition duration-300 text-sm md:text-base flex items-center justify-center"
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <Loader /> 
-                        ) : (
-                            <strong>LOGIN</strong>
-                        )}
-                    </button>
+        <motion.div
+            initial={{ opacity: 0, translateX: 100 }}
+            animate={{ opacity: 1, translateX: 0 }}
+            transition={{ duration: 1, type: 'spring', stiffness: 100 }}
+            className="w-full h-screen flex flex-col bg-red-600"
+        >
+            <div className="w-full h-full flex relative bg-white">
+                <div className="hidden lg:flex w-[60%] h-full flex-col items-center">
+                    <div
+                        className="w-full h-full bg-cover bg-center bg-no-repeat"
+                        style={{ backgroundImage: "url('https://res.cloudinary.com/dds1tocvk/image/upload/v1722863786/download_tjjvoy.png')" }}
+                    ></div>
                 </div>
-                <footer className="text-center text-gray-300 py-2">@created by ~pss</footer>
-            </section>
-        </div>
+
+                <div className="w-full lg:w-3/5 p-6 sm:p-12 flex flex-col items-center justify-center">
+                    <div className="absolute top-6 right-6">
+                        <img 
+                            src="https://res.cloudinary.com/dds1tocvk/image/upload/v1722890197/lnmquiz-high-resolution-logo-transparent_1_qgkoll.svg" 
+                            alt="Logo"
+                            className="h-24 w-auto" 
+                        />
+                    </div>
+                    <div className="w-full flex flex-col items-center">
+                        {children}
+                    </div>
+                </div>
+            </div>
+        </motion.div>
     );
-}
+};
 
 export default Home;

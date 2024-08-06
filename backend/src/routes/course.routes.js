@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getCoursesByBatch } from "../controllers/course.controller.js";
+import { getCourses } from "../controllers/course.controller.js";
 
 const router = Router();
 
-router.route("/").get(getCoursesByBatch);
+router.route("/").get(getCourses);
 
 export default router;
