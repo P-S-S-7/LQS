@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { BounceLoader } from 'react-spinners';
 import { motion } from 'framer-motion';
 
 const Loader = () => {
@@ -29,8 +28,24 @@ const Loader = () => {
     checkBackendConnection();
   }, [navigate]);
 
-  if (loading) {
-    return (
+  const spinnerStyle = {
+    border: '16px solid #f3f3f3', 
+    borderTop: '16px solid #e60012',
+    borderRadius: '50%',
+    width: '60px',
+    height: '60px',
+    animation: 'spin 2s linear infinite',
+  };
+
+  const spinAnimation = {
+    '@keyframes spin': {
+      '0%': { transform: 'rotate(0deg)' },
+      '100%': { transform: 'rotate(360deg)' },
+    },
+  };
+
+  return (
+    loading ? (
       <div className="relative flex flex-col justify-center items-center min-h-screen bg-white p-6 overflow-hidden">
         <motion.div
           className="relative text-6xl font-extrabold text-red-600 mb-4"
@@ -41,10 +56,7 @@ const Loader = () => {
           LNMQuiz
         </motion.div>
         <div className="relative flex flex-col items-center mb-6">
-          <BounceLoader
-            color="#e60012"
-            size={60}
-          />
+          <div style={spinnerStyle} className="spinner"></div>
           <motion.img 
             src="https://www.svgrepo.com/show/509001/avatar-thinking-9.svg" 
             alt="Thinking Avatar"
@@ -55,10 +67,8 @@ const Loader = () => {
           />
         </div>
       </div>
-    );
-  }
-
-  return null;
+    ) : null
+  );
 };
 
 export default Loader;
