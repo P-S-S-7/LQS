@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
-import { passwordRegex, studentEmailRegex, nameRegex } from '../../constants'
+import { passwordRegex, studentEmailRegex, nameRegex } from '../../constants';
 import { motion } from 'framer-motion';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../../Template/Toast.css'
 
 const Signup = () => {
     const [name, setName] = useState('');
@@ -12,8 +15,6 @@ const Signup = () => {
     const [role, setRole] = useState('');
     const [branch, setBranch] = useState('');
     const [department, setDepartment] = useState('');
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
@@ -32,56 +33,53 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setError('');
-        setSuccess('');
-
         if (!name) {
-            setError('Name is required');
+            toast.error('Name is required');
             return;
         }
 
         if (!nameRegex.test(name)) {
-            setError('Invalid name format. Every word should start with a capital letter and cannot contain digits or special characters.');
+            toast.error('Invalid name format. Every word should start with a capital letter and cannot contain digits or special characters.');
             return;
         }
 
         if (role !== 'Student' && role !== 'Faculty') {
-            setError('Select a valid role');
+            toast.error('Select a valid role');
             return;
         }
 
-        if (!email) {    
-            setError('Email is required');
+        if (!email) {
+            toast.error('Email is required');
             return;
         }
 
         if (role === 'Student' && !studentEmailRegex.test(email)) {
-            setError('Invalid email address');
+            toast.error('Invalid email address');
             return;
         }
 
         // if (role === 'Faculty' && !facultyEmailRegex.test(email)) {
-        //     setError('Invalid email address');
+        //     toast.error('Invalid email address');
         //     return;
         // }
 
         if (!password) {
-            setError('Password is required');
+            toast.error('Password is required');
             return;
         }
 
         if (!passwordRegex.test(password)) {
-            setError('Password must be at least 8 characters long and contain at least one letter, one number, and one special character.');
+            toast.error('Password must be at least 8 characters long and contain at least one letter, one number, and one special character.');
             return;
         }
 
         if (role === 'Student' && !branch) {
-            setError('Branch is required. Check your email address.');
+            toast.error('Branch is required. Check your email address.');
             return;
         }
 
         if (role === 'Faculty' && !department) {
-            setError('Department is required');
+            toast.error('Department is required');
             return;
         }
 
@@ -101,14 +99,13 @@ const Signup = () => {
             });
 
             if (response.status === 201) {
-                setSuccess('Registration successful. Please verify your email address. Check your inbox or spam folder.Redirecting to login...');
+                toast.success('Registration successful. Please verify your email address. Check your inbox or spam folder. Redirecting to login...');
+                setTimeout(() => navigate('/login'), 5000);
             }
-
-            setTimeout(() => navigate('/login'), 5000);
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'An unexpected error occurred.';
             console.error('Signup Error:', error);
-            setError(errorMessage);
+            toast.error(errorMessage);
         }
     };
 
@@ -145,18 +142,21 @@ const Signup = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                toastClassName="custom-toast"
+                bodyClassName="custom-toast-body"
+            />
             <div className="flex flex-col items-center">
                 <h2 className="text-3xl font-extrabold text-red-600 mb-8">Sign Up</h2>
-                {error && (
-                    <div className="bg-red-100 text-red-800 border border-red-300 rounded-lg p-4 mb-4">
-                        <p className="text-center">{error}</p>
-                    </div>
-                )}
-                {success && (
-                    <div className="bg-green-100 text-green-800 border border-green-300 rounded-lg p-4 mb-4">
-                        <p className="text-center">{success}</p>
-                    </div>
-                )}
                 <form onSubmit={handleSubmit} className="w-full">
                     <div className="space-y-5">
                         <div>
@@ -246,11 +246,12 @@ const Signup = () => {
                                     Branch
                                 </label>
                                 <input
+                                    type="text"
                                     id="branch"
                                     value={branch}
                                     onChange={(e) => setBranch(e.target.value)}
-                                    placeholder="Enter your branch"
                                     className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                    readOnly
                                 />
                             </div>
                         )}
@@ -269,52 +270,26 @@ const Signup = () => {
                                     className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
                                 >
                                     <option value="">Select your department</option>
-                                    <option value="CSE">CSE</option>
-                                    <option value="CCE">CCE</option>
-                                    <option value="ECE">ECE</option>
-                                    <option value="MME">MME</option>
-                                    <option value="PHY">PHY</option>
-                                    <option value="HSS">HSS</option>
-                                    <option value="MTH">MTH</option>
+                                    <option value="CSE">Computer Science and Engineering</option>
+                                    <option value="ECE">Electronics and Communication Engineering</option>
+                                    <option value="MME">Mechanical and Manufacturing Engineering</option>
+                                    <option value="CCE">Civil and Construction Engineering</option>
                                 </select>
                             </div>
                         )}
-                        <div className="flex items-center justify-between">
-                            <p className="mt-2 text-base text-red-600">
-                                Already have an account? {' '}
-                                <br/>
-                                <Link
-                                    to="/login"
-                                    className="font-semibold text-red-700 hover:underline"
-                                >
-                                    Login
-                                </Link>
-                            </p>
-                            <div>
-                                <button
-                                    type="submit"
-                                    className="w-full h-12 flex border-red-600 text-white border-[2.5px] bg-red-600 px-3 font-semibold py-2 rounded-md hover:bg-white hover:text-red-600 transition-colors"
-                                >
-                                    Sign Up{' '}
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="20"
-                                        height="20"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="ml-2"
-                                    >
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                        <polyline points="12 5 19 12 12 19"></polyline>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
                     </div>
+                    <button
+                        type="submit"
+                        className="w-full h-12 mt-6 text-lg font-semibold text-white bg-red-600 rounded-md hover:bg-red-700"
+                    >
+                        Sign Up
+                    </button>
+                    <p className="mt-6 text-base text-center text-red-600">
+                        Already have an account?{' '}
+                        <Link to="/login" className="font-medium underline hover:text-red-700">
+                            Log In
+                        </Link>
+                    </p>
                 </form>
             </div>
         </motion.div>

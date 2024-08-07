@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Logout from '../User/Logout';
 import UserProfile from './SubComponents/UserProfile';
 import LoadingSpinner from './SubComponents/LoadingSpinner';
-import ErrorNotification from './SubComponents/ErrorNotification';
 import QuizzesTable from './SubComponents/QuizzesTable';
 import DeleteConfirmation from './SubComponents/DeleteConfirmation';
+import '../../Template/Toast.css';
 
 const FacultyPortal = () => {
   const [name, setName] = useState('');
@@ -15,7 +17,6 @@ const FacultyPortal = () => {
   const [batch, setBatch] = useState('');
   const [quizzes, setQuizzes] = useState([]);
   const [userQuizzes, setUserQuizzes] = useState([]);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [viewType, setViewType] = useState('');
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
@@ -39,7 +40,7 @@ const FacultyPortal = () => {
         if (error.response && error.response.status === 401) {
           navigate('/login');
         } else {
-          setError(error.response?.data?.message || 'Error fetching user details');
+          toast.error(error.response?.data?.message || 'Error fetching user details');
         }
       } finally {
         setLoading(false);
@@ -63,7 +64,7 @@ const FacultyPortal = () => {
       setQuizzes(quizzes);
       setViewType('batch');
     } catch (error) {
-      setError(error.response?.data?.message || error.message || 'Error fetching quizzes');
+      toast.error(error.response?.data?.message || 'Error fetching quizzes');
     }
   };
 
@@ -75,7 +76,7 @@ const FacultyPortal = () => {
       setUserQuizzes(quizzes);
       setViewType('user');
     } catch (error) {
-      setError(error.response?.data?.message || 'Error fetching user quizzes');
+      toast.error(error.response?.data?.message || 'Error fetching user quizzes');
     }
   };
 
@@ -94,8 +95,9 @@ const FacultyPortal = () => {
       setUserQuizzes(userQuizzes.filter(quiz => quiz._id !== quizToDelete));
       setIsDeletePopupOpen(false);
       setQuizToDelete(null);
+      toast.success('Quiz deleted successfully');
     } catch (error) {
-      setError(error.response?.data?.message || 'Error deleting quiz');
+      toast.error(error.response?.data?.message || 'Error deleting quiz');
       setIsDeletePopupOpen(false);
       setQuizToDelete(null);
     }
@@ -116,6 +118,17 @@ const FacultyPortal = () => {
 
   return (
     <div className="font-Poppins flex flex-col h-[90vh] w-full bg-dashBoardBg p-6 mx-3 my-7 mb-7 rounded-lg">
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="flex mb-6 items-center justify-between">
         <h1 className="text-3xl border-b-4 border-l-4 pl-3 pb-2 pt-1 border-red-500 shadow-sm rounded-sm font-semibold text-center text-gray-800 mb-2 select-none">
           Dashboard
@@ -125,7 +138,6 @@ const FacultyPortal = () => {
           <Logout />
         </div>
       </div>
-      {error && <ErrorNotification message={error} />}
       <div className="bg-white rounded-lg shadow-lg p-4 border border-gray-300 mb-4 h-full my-4">
         <div className="flex gap-2 mb-16">
           <button
@@ -178,7 +190,6 @@ const FacultyPortal = () => {
         </div>
       )}
       {viewType === 'user' && <QuizzesTable quizzes={userQuizzes} viewType={viewType} onDelete={handleDeleteQuiz} />}
-
       </div>
       <DeleteConfirmation
         isOpen={isDeletePopupOpen}

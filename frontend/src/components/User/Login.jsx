@@ -3,12 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
     const [role, setRole] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
@@ -22,7 +23,7 @@ function Login() {
                 if (response.data.data.role === 'Student') {
                     navigate('/student-portal');
                 }
-                
+
                 if (response.data.data.role === 'Faculty') {
                     navigate('/faculty-portal');
                 }
@@ -50,7 +51,7 @@ function Login() {
         e.preventDefault();
 
         if (!email || !password || !role) {
-            setError('All fields are required');
+            toast.error('All fields are required');
             return;
         }
 
@@ -69,11 +70,11 @@ function Login() {
             } else if (user.role === 'Faculty' && role === 'Faculty') {
                 navigate('/faculty-portal');
             } else {
-                setError('Invalid role');
+                toast.error('Invalid role');
             }
         } catch (error) {
             console.error('Login failed:', error.response?.data || error.message);
-            setError(error.response?.data?.message || 'Invalid credentials');
+            toast.error(error.response?.data?.message || 'Invalid credentials');
         }
     };
 
@@ -88,16 +89,21 @@ function Login() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <div className="flex flex-col items-center">
-                {error && (
-                    <div className="bg-red-100 text-red-800 border border-red-300 rounded-lg p-4 mb-4">
-                    <p className="text-center">{error}</p>
-                    </div>
-                )}
-             <h2 className="text-3xl font-extrabold text-red-600 mb-8">
+                <h2 className="text-3xl font-extrabold text-red-600 mb-8">
                     Login
                 </h2>
-
                 <form onSubmit={handleSubmit} className="w-full">
                     <div className="space-y-5">
                         <div>
@@ -107,7 +113,7 @@ function Login() {
                             >
                                 Select Role
                             </label>
-                            <select 
+                            <select
                                 id="role"
                                 value={role}
                                 onChange={handleRoleChange}

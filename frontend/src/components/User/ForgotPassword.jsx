@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../../Template/Toast.css';
 
 function ForgotPassword() {
     const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -14,14 +15,13 @@ function ForgotPassword() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage('');
-        setError('');
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/forgot-password`, { email });
-            setMessage(response.data.message);
+            toast.success(response.data.message);
         } catch (err) {
-            setError(err.response ? err.response.data.message : 'An error occurred. Please try again.');
+            const errorMessage = err.response ? err.response.data.message : 'An error occurred. Please try again.';
+            toast.error(errorMessage);
         }
     };
 
@@ -32,17 +32,18 @@ function ForgotPassword() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <div className="flex flex-col items-center">
-                {message && (
-                    <div className="bg-green-100 text-green-800 border border-green-300 rounded-lg p-4 mb-4">
-                        <p className="text-center">{message}</p>
-                    </div>
-                )}
-                {error && (
-                    <div className="bg-red-100 text-red-800 border border-red-300 rounded-lg p-4 mb-4">
-                        <p className="text-center">{error}</p>
-                    </div>
-                )}
                 <h2 className="text-3xl font-extrabold text-red-600 mb-8">
                     Forgot Password
                 </h2>

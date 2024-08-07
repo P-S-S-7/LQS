@@ -3,7 +3,9 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
-import ErrorNotification from './ErrorNotification';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../../../Template/Toast.css';
 
 const ScheduleQuiz = () => {
   const [batch, setBatch] = useState('');
@@ -15,7 +17,6 @@ const ScheduleQuiz = () => {
   const [locations, setLocations] = useState([]);
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
-  const [error, setError] = useState('');
   const batchList = ['Y-20', 'Y-21', 'Y-22', 'Y-23', 'Y-24'];
 
   const navigate = useNavigate();
@@ -23,19 +24,23 @@ const ScheduleQuiz = () => {
   useEffect(() => {
     const verifyUser = async () => {
       try {
-        const verifyResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users/verify-user`, { withCredentials: true });
-        if (verifyResponse.status === 401) {
-          navigate('/login');
+        const verifyResponse = await axios.get(`${import.meta.env.VITE_API_URL}/users/user-details`, {
+            withCredentials: true
+        });
+        if (verifyResponse.data.data.role !== 'Faculty') {
+            navigate('/login');
         }
       } catch (error) {
-        console.error('Error verifying user:', error);
-        navigate('/login');
+        if (error.response && error.response.status === 401) {
+          navigate('/login');
+        } else {
+          toast.error(error.response?.data?.message || 'Error fetching user details');
+        }
       }
     };
 
     verifyUser();
   }, [navigate]);
-
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -46,7 +51,7 @@ const ScheduleQuiz = () => {
         setCourses(response.data.data);
         setFilteredCourses([]);
       } catch (error) {
-        console.error('Error fetching courses:', error);
+        toast.error('Error fetching courses');
       }
     };
 
@@ -61,7 +66,7 @@ const ScheduleQuiz = () => {
         });
         setLocations(response.data.data);
       } catch (error) {
-        console.error('Error fetching locations:', error);
+        toast.error('Error fetching locations');
       }
     };
 
@@ -87,17 +92,17 @@ const ScheduleQuiz = () => {
     const endDay = endTime.getDate();
 
     if (!batch || !course || !location || !startTime || !endTime) {
-      setError('All fields are required.');
+      toast.error('All fields are required.');
       return;
     }
 
     if (startTime < now) {
-      setError('Start time must be after the current time.');
+      toast.error('Start time must be after the current time.');
       return;
     }
 
     if (startDay !== endDay) {
-      setError('Start time and End time must be on the same day.');
+      toast.error('Start time and End time must be on the same day.');
       return;
     }
 
@@ -111,11 +116,11 @@ const ScheduleQuiz = () => {
       }, {
         withCredentials: true
       });
-      setError('');
+      toast.success('Quiz scheduled successfully!');
       navigate('/faculty-portal');
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Error scheduling quiz. Please try again.';
-      setError(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
@@ -127,11 +132,11 @@ const ScheduleQuiz = () => {
 
   return (
     <div className="font-Poppins flex flex-col h-[90vh] w-full bg-dashBoardBg p-6 mx-3 my-7 mb-7 rounded-lg">
+      <ToastContainer />
       <h1 className="text-3xl pb-2 pt-1 pl-3 font-semibold text-center text-gray-800 mb-4">
         Schedule Quiz
       </h1>
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-4 border border-gray-300">
-        {error && <ErrorNotification message={error} />}
         <div className="mb-4">
           <label htmlFor="batch" className="block text-gray-700 mb-2">Select Batch</label>
           <select

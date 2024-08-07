@@ -4,39 +4,44 @@ import axios from 'axios';
 import { passwordRegex } from '../../constants';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../../Template/Toast.css'
 
 function ResetPassword() {
     const { token } = useParams();
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!password) {
-            setError('Password is required');
+            toast.error('Password is required');
             return;
         }
 
         if (!passwordRegex.test(password)) {
-            setError('Password must be at least 8 characters long and contain at least one letter, one number, and one special character.');
+            toast.error('Password must be at least 8 characters long and contain at least one letter, one number, and one special character.');
             return;
         }
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/users/reset-password/${token}`, { password });
-            setMessage(response.data.message);
-            setError('');
-            setTimeout(() => navigate('/login'), 2000); 
+            toast.success('Password reset successful');
+            setTimeout(() => navigate('/login'), 2000);
         } catch (err) {
-            setMessage('');
-            setError(err.response?.data?.message || 'An error occurred');
+            toast.error(err.response?.data?.message || 'An error occurred');
         }
     };
 
@@ -47,18 +52,18 @@ function ResetPassword() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
             <div className="flex flex-col items-center">
-                {/* Display messages at the top */}
-                {message && (
-                    <div className="bg-green-100 text-green-800 border border-green-300 rounded-lg p-4 mb-4">
-                        <p className="text-center">{message}</p>
-                    </div>
-                )}
-                {error && (
-                    <div className="bg-red-100 text-red-800 border border-red-300 rounded-lg p-4 mb-4">
-                        <p className="text-center">{error}</p>
-                    </div>
-                )}
                 <h2 className="text-3xl font-extrabold text-red-600 mb-8">
                     Reset Password
                 </h2>
@@ -80,14 +85,23 @@ function ResetPassword() {
                             >
                                 New Password
                             </label>
-                            <input
-                                type="password"
-                                id="password"
-                                value={password}
-                                onChange={handlePasswordChange}
-                                className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
-                                placeholder="Enter your new password"
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    id="password"
+                                    value={password}
+                                    onChange={handlePasswordChange}
+                                    className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                    placeholder="Enter your new password"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={togglePasswordVisibility}
+                                    className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 focus:outline-none"
+                                >
+                                    {showPassword ? <EyeSlashIcon className="h-6 w-6 text-red-600" /> : <EyeIcon className="h-6 w-6 text-red-600" />}
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <button
@@ -115,7 +129,7 @@ function ResetPassword() {
                     </div>
                 </form>
             </div>
-        </motion.div>   
+        </motion.div>
     );
 }
 

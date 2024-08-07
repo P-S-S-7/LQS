@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Logout from '../User/Logout';
-import UserProfile from './SubComponents/UserProfile'; 
-import QuizzesTable from './SubComponents/QuizzesTable';  
-import ErrorNotification from './SubComponents/ErrorNotification'; 
+import UserProfile from './SubComponents/UserProfile';
+import QuizzesTable from './SubComponents/QuizzesTable';
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
+import '../../Template/Toast.css'
 
 const StudentPortal = () => {
   const [name, setName] = useState('');
@@ -13,7 +15,6 @@ const StudentPortal = () => {
   const [email, setEmail] = useState('');
   const [batch, setBatch] = useState('');
   const [quizzes, setQuizzes] = useState([]);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -36,7 +37,7 @@ const StudentPortal = () => {
         if (error.response && error.response.status === 401) {
           navigate('/login');
         } else {
-          setError(error.response?.data?.message || 'Error fetching user details');
+          toast.error(error.response?.data?.message || 'Error fetching user details');
           console.error('Error fetching user details:', error);
         }
       } finally {
@@ -64,7 +65,7 @@ const StudentPortal = () => {
           );
           setQuizzes(sortedQuizzes);
         } catch (error) {
-          setError(error.response?.data?.message || 'Error fetching quizzes');
+          toast.error(error.response?.data?.message || 'Error fetching quizzes');
         }
       };
 
@@ -92,6 +93,17 @@ const StudentPortal = () => {
 
   return (
     <div className="font-Poppins flex flex-col h-[90vh] w-full bg-dashBoardBg p-6 mx-3 my-7 mb-7 rounded-lg">
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="flex mb-6 items-center justify-between">
         <h1 className="text-3xl border-b-4 border-l-4 pl-3 pb-2 pt-1 border-red-500 shadow-sm rounded-sm font-semibold text-center text-gray-800 mb-2 select-none">
           Dashboard
@@ -103,7 +115,6 @@ const StudentPortal = () => {
           </div>
         </div>
       </div>
-      {error && <ErrorNotification message={error} />}
       <div className="bg-white rounded-lg shadow-lg p-4 border border-gray-300 mb-4 h-full my-4">
         <div className="mx-auto p-4">
           <div className="w-full max-w-md mx-auto">
