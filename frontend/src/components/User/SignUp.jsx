@@ -258,31 +258,40 @@ const Signup = () => {
                                 >
                                     Department
                                 </label>
-                                <input
-                                    type="text"
+                                <select
                                     id="department"
                                     value={department}
                                     onChange={(e) => setDepartment(e.target.value)}
                                     className="w-full h-10 sm:h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
-                                    placeholder="Enter your department"
-                                    required
-                                />
+                                >
+                                    <option value="">Select your department</option>
+                                    <option value="CSE">CSE</option>
+                                    <option value="CCE">CCE</option>
+                                    <option value="ECE">ECE</option>
+                                    <option value="MME">MME</option>
+                                    <option value="PHY">PHY</option>
+                                    <option value="HSS">HSS</option>
+                                    <option value="MTH">MTH</option>
+                                </select>
                             </div>
                         )}
-                        <div className="mt-6 sm:mt-8">
+                        <div className="flex justify-center">
                             <button
                                 type="submit"
-                                className="w-full h-10 sm:h-12 flex justify-center items-center bg-red-600 text-white text-base sm:text-lg font-bold rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                className="w-full sm:w-1/2 h-12 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
                             >
                                 Sign Up
                             </button>
                         </div>
                     </div>
                 </form>
-                <p className="mt-4 sm:mt-6 text-red-600">
+                <div className="text-center mt-4">
+
+                </div>
+                <p className="mt-6 sm:mt-8 text-sm sm:text-base text-red-600">
                     Already have an account?{' '}
-                    <Link to="/login" className="font-semibold text-red-700 hover:underline">
-                        Login
+                    <Link to="/login" className="text-red-700 hover:underline font-semibold">
+                         Login
                     </Link>
                 </p>
             </div>
