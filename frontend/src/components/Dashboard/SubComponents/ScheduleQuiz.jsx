@@ -5,18 +5,17 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Select from 'react-select';
 import '../../../Template/Toast.css';
 
 const ScheduleQuiz = () => {
   const [batch, setBatch] = useState('');
-  const [course, setCourse] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [courses, setCourses] = useState([]);
-  const [filteredCourses, setFilteredCourses] = useState([]);
+  const [course, setCourse] = useState(null);
   const [location, setLocation] = useState('');
-  const [locations, setLocations] = useState([]);
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
+  const [courses, setCourses] = useState([]);
+  const [locations, setLocations] = useState([]);
   const batchList = ['Y-20', 'Y-21', 'Y-22', 'Y-23', 'Y-24'];
 
   const navigate = useNavigate();
@@ -48,8 +47,7 @@ const ScheduleQuiz = () => {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/courses`, {
           withCredentials: true
         });
-        setCourses(response.data.data);
-        setFilteredCourses([]);
+        setCourses(response.data.data.map(course => ({ value: course.name, label: course.name })));
       } catch (error) {
         toast.error('Error fetching courses');
       }
@@ -72,17 +70,6 @@ const ScheduleQuiz = () => {
 
     fetchLocations();
   }, []);
-
-  useEffect(() => {
-    if (searchTerm) {
-      const results = courses.filter(course =>
-        course.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredCourses(results);
-    } else {
-      setFilteredCourses([]);
-    }
-  }, [searchTerm, courses]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,7 +96,7 @@ const ScheduleQuiz = () => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/quizzes/schedule`, {
         batch,
-        course,
+        course: course.value,
         location,
         startTime,
         endTime,
@@ -122,12 +109,6 @@ const ScheduleQuiz = () => {
       const errorMessage = error.response?.data?.message || 'Error scheduling quiz. Please try again.';
       toast.error(errorMessage);
     }
-  };
-
-  const handleCourseSelect = (selectedCourse) => {
-    setCourse(selectedCourse);
-    setSearchTerm(selectedCourse);
-    setFilteredCourses([]);
   };
 
   return (
@@ -151,29 +132,16 @@ const ScheduleQuiz = () => {
             ))}
           </select>
         </div>
-        <div className="mb-4 relative">
+        <div className="mb-4">
           <label htmlFor="course" className="block text-gray-700 mb-2">Select Course</label>
-          <input
-            type="text"
+          <Select
             id="course"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search for a course"
-            className="w-full border border-gray-500 rounded-lg p-2 bg-gray-50 text-gray-900"
+            options={courses}
+            value={course}
+            onChange={setCourse}
+            placeholder="Search for a course..."
+            className="w-full"
           />
-          {filteredCourses.length > 0 && (
-            <ul className="absolute z-10 bg-white border border-gray-500 rounded-lg w-full mt-1 max-h-60 overflow-auto">
-              {filteredCourses.map((course) => (
-                <li
-                  key={course.id}
-                  className="p-2 cursor-pointer hover:bg-gray-200"
-                  onClick={() => handleCourseSelect(course.name)}
-                >
-                  {course.name}
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
         <div className="mb-4">
           <label htmlFor="location" className="block text-gray-700 mb-2">Select Location</label>
