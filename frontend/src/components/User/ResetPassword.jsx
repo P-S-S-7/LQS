@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { passwordRegex } from '../../constants';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../../Template/Toast.css'
+import '../../Template/Toast.css';
 
 function ResetPassword() {
     const { token } = useParams();
@@ -47,7 +46,7 @@ function ResetPassword() {
 
     return (
         <motion.div
-            className="bg-white w-[65%] p-8 font-Poppins"
+            className="bg-white w-full max-w-lg p-6 sm:p-8 md:p-10 lg:w-[65%] rounded-sm font-Poppins mx-auto"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -64,10 +63,10 @@ function ResetPassword() {
                 pauseOnHover
             />
             <div className="flex flex-col items-center">
-                <h2 className="text-3xl font-extrabold text-red-600 mb-8">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-red-600 mb-6 sm:mb-8">
                     Reset Password
                 </h2>
-                <p className="text-base text-red-600 mb-8">
+                <p className="text-sm sm:text-base text-red-600 mb-6 sm:mb-8">
                     Remembered your password?{' '}
                     <Link
                         to="/login"
@@ -77,11 +76,11 @@ function ResetPassword() {
                     </Link>
                 </p>
                 <form onSubmit={handleSubmit} className="w-full">
-                    <div className="space-y-5">
+                    <div className="space-y-4 sm:space-y-5">
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-lg font-medium text-red-600 mb-2"
+                                className="block text-base sm:text-lg font-medium text-red-600 mb-2"
                             >
                                 New Password
                             </label>
@@ -91,7 +90,7 @@ function ResetPassword() {
                                     id="password"
                                     value={password}
                                     onChange={handlePasswordChange}
-                                    className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                    className="w-full h-10 sm:h-12 px-3 py-2 text-sm sm:text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
                                     placeholder="Enter your new password"
                                 />
                                 <button
@@ -106,7 +105,7 @@ function ResetPassword() {
                         <div>
                             <button
                                 type="submit"
-                                className="h-12 flex border-red-600 text-white border-[2.5px] bg-red-600 px-3 font-semibold py-2 rounded-md hover:bg-white hover:text-red-600 transition-colors justify-center items-center"
+                                className="w-full h-10 sm:h-12 flex border-red-600 text-white border-[2.5px] bg-red-600 px-3 font-semibold py-2 rounded-md hover:bg-white hover:text-red-600 transition-colors justify-center items-center"
                             >
                                 Reset Password{' '}
                                 <svg

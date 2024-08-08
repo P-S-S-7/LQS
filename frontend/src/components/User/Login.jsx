@@ -84,7 +84,7 @@ function Login() {
 
     return (
         <motion.div
-            className="bg-white w-[65%] p-8 rounded-sm font-Poppins"
+            className="bg-white w-full sm:w-[85%] lg:w-[65%] p-6 sm:p-8 rounded-sm font-Poppins"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -101,15 +101,15 @@ function Login() {
                 pauseOnHover
             />
             <div className="flex flex-col items-center">
-                <h2 className="text-3xl font-extrabold text-red-600 mb-8">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-red-600 mb-6 sm:mb-8">
                     Login
                 </h2>
                 <form onSubmit={handleSubmit} className="w-full">
-                    <div className="space-y-5">
+                    <div className="space-y-4 sm:space-y-5">
                         <div>
                             <label
                                 htmlFor="role"
-                                className="block text-lg font-medium text-red-600 mb-2"
+                                className="block text-base sm:text-lg font-medium text-red-600 mb-2"
                             >
                                 Select Role
                             </label>
@@ -117,7 +117,7 @@ function Login() {
                                 id="role"
                                 value={role}
                                 onChange={handleRoleChange}
-                                className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                className="w-full h-10 sm:h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
                             >
                                 <option value="">Select Role</option>
                                 <option value="Student">Student</option>
@@ -127,7 +127,7 @@ function Login() {
                         <div>
                             <label
                                 htmlFor="email"
-                                className="block text-lg font-medium text-red-600 mb-2"
+                                className="block text-base sm:text-lg font-medium text-red-600 mb-2"
                             >
                                 Email address
                             </label>
@@ -136,14 +136,14 @@ function Login() {
                                 id="email"
                                 value={email}
                                 onChange={handleEmailChange}
-                                className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                className="w-full h-10 sm:h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
                                 placeholder="Enter your email address"
                             />
                         </div>
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-lg font-medium text-red-600 mb-2"
+                                className="block text-base sm:text-lg font-medium text-red-600 mb-2"
                             >
                                 Password
                             </label>
@@ -153,7 +153,7 @@ function Login() {
                                     id="password"
                                     value={password}
                                     onChange={handlePasswordChange}
-                                    className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                    className="w-full h-10 sm:h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
                                     placeholder="Enter your password"
                                 />
                                 <button
@@ -165,8 +165,8 @@ function Login() {
                                 </button>
                             </div>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <div className="text-base">
+                        <div className="flex flex-col sm:flex-row items-center justify-between">
+                            <div className="text-sm sm:text-base mb-4 sm:mb-0">
                                 <Link
                                     to="/forgot-password"
                                     className="font-semibold text-red-600 hover:underline"
@@ -174,10 +174,10 @@ function Login() {
                                     Forgot password?
                                 </Link>
                             </div>
-                            <div>
+                            <div className="w-full sm:w-auto">
                                 <button
                                     type="submit"
-                                    className="w-full h-12 flex border-red-600 text-white border-[2.5px] bg-red-600 px-3 font-semibold py-2 rounded-md hover:bg-white hover:text-red-600 transition-colors"
+                                    className="w-full h-10 sm:h-12 flex items-center justify-center border-red-600 text-white border-[2.5px] bg-red-600 px-3 font-semibold py-2 rounded-md hover:bg-white hover:text-red-600 transition-colors"
                                 >
                                     Login{' '}
                                     <svg
@@ -200,7 +200,7 @@ function Login() {
                         </div>
                     </div>
                 </form>
-                <p className="mt-8 text-base text-red-600">
+                <p className="mt-6 sm:mt-8 text-sm sm:text-base text-red-600">
                     Don't have an account?{' '}
                     <Link
                         to="/signup"

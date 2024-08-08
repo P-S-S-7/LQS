@@ -6,7 +6,7 @@ const Home = ({ children }) => {
             initial={{ opacity: 0, translateX: 100 }}
             animate={{ opacity: 1, translateX: 0 }}
             transition={{ duration: 1, type: 'spring', stiffness: 100 }}
-            className="w-full h-screen flex flex-col bg-red-600 "
+            className="w-full h-screen flex flex-col bg-red-600"
         >
             <div className="w-full h-full flex relative bg-white">
                 <div className="hidden lg:flex w-[60%] h-full flex-col items-center">
@@ -17,13 +17,22 @@ const Home = ({ children }) => {
                 </div>
 
                 <div className="w-full lg:w-3/5 p-6 sm:p-12 flex flex-col items-center justify-center">
-                    <div className="absolute top-6 right-6">
+                    <div className="absolute top-6 right-6 hidden sm:block">
                         <img
                             src="https://res.cloudinary.com/dds1tocvk/image/upload/v1722890197/lnmquiz-high-resolution-logo-transparent_1_qgkoll.svg"
                             alt="Logo"
-                            className="h-24 w-auto"
+                            className="h-12 w-auto lg:h-24"
                         />
                     </div>
+
+                    <div className="sm:hidden mb-6">
+                        <img
+                            src="https://res.cloudinary.com/dds1tocvk/image/upload/v1722890197/lnmquiz-high-resolution-logo-transparent_1_qgkoll.svg"
+                            alt="Logo"
+                            className="h-20 w-auto mx-auto"
+                        />
+                    </div>
+
                     <div className="w-full flex flex-col items-center">
                         {children}
                     </div>

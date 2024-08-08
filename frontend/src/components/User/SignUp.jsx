@@ -6,7 +6,7 @@ import { passwordRegex, studentEmailRegex, nameRegex } from '../../constants';
 import { motion } from 'framer-motion';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../../Template/Toast.css'
+import '../../Template/Toast.css';
 
 const Signup = () => {
     const [name, setName] = useState('');
@@ -57,11 +57,6 @@ const Signup = () => {
             toast.error('Invalid email address');
             return;
         }
-
-        // if (role === 'Faculty' && !facultyEmailRegex.test(email)) {
-        //     toast.error('Invalid email address');
-        //     return;
-        // }
 
         if (!password) {
             toast.error('Password is required');
@@ -137,7 +132,7 @@ const Signup = () => {
 
     return (
         <motion.div
-            className="bg-white w-[65%] p-8 rounded-sm font-Poppins"
+            className="bg-white w-full sm:w-[85%] lg:w-[65%] p-6 sm:p-8 rounded-sm font-Poppins"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -156,13 +151,13 @@ const Signup = () => {
                 bodyClassName="custom-toast-body"
             />
             <div className="flex flex-col items-center">
-                <h2 className="text-3xl font-extrabold text-red-600 mb-8">Sign Up</h2>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-red-600 mb-6 sm:mb-8">Sign Up</h2>
                 <form onSubmit={handleSubmit} className="w-full">
-                    <div className="space-y-5">
+                    <div className="space-y-4 sm:space-y-5">
                         <div>
                             <label
                                 htmlFor="name"
-                                className="block text-lg font-medium text-red-600 mb-2"
+                                className="block text-base sm:text-lg font-medium text-red-600 mb-2"
                             >
                                 Name
                             </label>
@@ -171,7 +166,7 @@ const Signup = () => {
                                 id="name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                className="w-full h-10 sm:h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
                                 placeholder="Enter your name"
                                 required
                             />
@@ -179,7 +174,7 @@ const Signup = () => {
                         <div>
                             <label
                                 htmlFor="role"
-                                className="block text-lg font-medium text-red-600 mb-2"
+                                className="block text-base sm:text-lg font-medium text-red-600 mb-2"
                             >
                                 Select Role
                             </label>
@@ -187,7 +182,7 @@ const Signup = () => {
                                 id="role"
                                 value={role}
                                 onChange={(e) => setRole(e.target.value)}
-                                className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                className="w-full h-10 sm:h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
                             >
                                 <option value="">Select your role</option>
                                 <option value="Student">Student</option>
@@ -197,7 +192,7 @@ const Signup = () => {
                         <div>
                             <label
                                 htmlFor="email"
-                                className="block text-lg font-medium text-red-600 mb-2"
+                                className="block text-base sm:text-lg font-medium text-red-600 mb-2"
                             >
                                 Email address
                             </label>
@@ -206,7 +201,7 @@ const Signup = () => {
                                 id="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                className="w-full h-10 sm:h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
                                 placeholder="Enter your email address"
                                 required
                             />
@@ -214,7 +209,7 @@ const Signup = () => {
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-lg font-medium text-red-600 mb-2"
+                                className="block text-base sm:text-lg font-medium text-red-600 mb-2"
                             >
                                 Password
                             </label>
@@ -224,7 +219,7 @@ const Signup = () => {
                                     id="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                    className="w-full h-10 sm:h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
                                     placeholder="Enter your password"
                                     required
                                 />
@@ -233,7 +228,7 @@ const Signup = () => {
                                     onClick={togglePasswordVisibility}
                                     className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 focus:outline-none"
                                 >
-                                    {showPassword ? <EyeSlashIcon className="h-6 w-6 text-red-600" /> : <EyeIcon className="h-6 w-6 text-red-600" />}
+                                    {showPassword ? <EyeSlashIcon className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" /> : <EyeIcon className="h-5 w-5 sm:h-6 sm:w-6 text-red-600" />}
                                 </button>
                             </div>
                         </div>
@@ -241,7 +236,7 @@ const Signup = () => {
                             <div>
                                 <label
                                     htmlFor="branch"
-                                    className="block text-lg font-medium text-red-600 mb-2"
+                                    className="block text-base sm:text-lg font-medium text-red-600 mb-2"
                                 >
                                     Branch
                                 </label>
@@ -250,7 +245,7 @@ const Signup = () => {
                                     id="branch"
                                     value={branch}
                                     onChange={(e) => setBranch(e.target.value)}
-                                    className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                    className="w-full h-10 sm:h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
                                     readOnly
                                 />
                             </div>
@@ -259,38 +254,37 @@ const Signup = () => {
                             <div>
                                 <label
                                     htmlFor="department"
-                                    className="block text-lg font-medium text-red-600 mb-2"
+                                    className="block text-base sm:text-lg font-medium text-red-600 mb-2"
                                 >
                                     Department
                                 </label>
-                                <select
+                                <input
+                                    type="text"
                                     id="department"
                                     value={department}
                                     onChange={(e) => setDepartment(e.target.value)}
-                                    className="w-full h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
-                                >
-                                    <option value="">Select your department</option>
-                                    <option value="CSE">Computer Science and Engineering</option>
-                                    <option value="ECE">Electronics and Communication Engineering</option>
-                                    <option value="MME">Mechanical and Manufacturing Engineering</option>
-                                    <option value="CCE">Civil and Construction Engineering</option>
-                                </select>
+                                    className="w-full h-10 sm:h-12 px-3 py-2 text-base border rounded-md border-gray-600 focus:outline-none focus:ring-2 focus:border-red-500 focus:ring-red-500 bg-white text-gray-900"
+                                    placeholder="Enter your department"
+                                    required
+                                />
                             </div>
                         )}
+                        <div className="mt-6 sm:mt-8">
+                            <button
+                                type="submit"
+                                className="w-full h-10 sm:h-12 flex justify-center items-center bg-red-600 text-white text-base sm:text-lg font-bold rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                            >
+                                Sign Up
+                            </button>
+                        </div>
                     </div>
-                    <button
-                        type="submit"
-                        className="w-full h-12 mt-6 text-lg font-semibold text-white bg-red-600 rounded-md hover:bg-red-700"
-                    >
-                        Sign Up
-                    </button>
-                    <p className="mt-6 text-base text-center text-red-600">
-                        Already have an account?{' '}
-                        <Link to="/login" className="font-medium underline hover:text-red-700">
-                            Log In
-                        </Link>
-                    </p>
                 </form>
+                <p className="mt-4 sm:mt-6 text-red-600">
+                    Already have an account?{' '}
+                    <Link to="/login" className="font-semibold text-red-700 hover:underline">
+                        Login
+                    </Link>
+                </p>
             </div>
         </motion.div>
     );

@@ -7,7 +7,7 @@ import Logout from '../User/Logout';
 import UserProfile from './SubComponents/UserProfile';
 import QuizzesTable from './SubComponents/QuizzesTable';
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
-import '../../Template/Toast.css'
+import '../../Template/Toast.css';
 
 const StudentPortal = () => {
   const [name, setName] = useState('');
@@ -92,7 +92,7 @@ const StudentPortal = () => {
   }
 
   return (
-    <div className="font-Poppins flex flex-col h-[90vh] w-full bg-dashBoardBg p-6 mx-3 my-7 mb-7 rounded-lg">
+    <div className="font-Poppins flex flex-col min-h-screen w-full bg-dashBoardBg p-4 md:p-6 mx-2 md:mx-4 my-4 md:my-6 rounded-lg select-none">
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -104,20 +104,20 @@ const StudentPortal = () => {
         draggable
         pauseOnHover
       />
-      <div className="flex mb-6 items-center justify-between">
-        <h1 className="text-3xl border-b-4 border-l-4 pl-3 pb-2 pt-1 border-red-500 shadow-sm rounded-sm font-semibold text-center text-gray-800 mb-2 select-none">
+      <div className="flex flex-col md:flex-row items-center justify-between mb-6">
+        <h1 className="text-2xl md:text-3xl border-b-4 border-l-4 pl-2 md:pl-3 pb-1 md:pb-2 pt-1 border-red-500 shadow-sm rounded-sm font-semibold text-center text-gray-800 mb-2">
           Dashboard
         </h1>
-        <div className="flex items-center gap-12">
+        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-12">
           <UserProfile name={name} email={email} role={role} />
-          <div className="flex items-center mr-6">
+          <div className="flex items-center mt-4 md:mt-0">
             <Logout />
           </div>
         </div>
       </div>
-      <div className="bg-white rounded-lg shadow-lg p-4 border border-gray-300 mb-4 h-full my-4">
+      <div className="bg-white rounded-lg shadow-lg p-4 border border-gray-300 mb-4 h-full">
         <div className="mx-auto p-4">
-          <div className="w-full max-w-md mx-auto">
+          <div className="w-full max-w-xs md:max-w-md mx-auto">
             <label htmlFor="batch" className="block text-gray-900 font-semibold mb-2 text-center">
               Select Batch
             </label>

@@ -32,11 +32,10 @@ const EmailVerification = () => {
 
     return (
         <motion.div
-            className="bg-white w-[65%] p-8 font-Poppins"
+            className="bg-white w-full max-w-lg p-6 sm:p-8 md:p-10 rounded-sm font-Poppins mx-auto"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            style={{ maxWidth: '500px', width: '100%', padding: '20px' }}
         >
             <ToastContainer
                 position="top-center"
@@ -50,8 +49,8 @@ const EmailVerification = () => {
                 pauseOnHover
             />
             <div className="flex flex-col items-center">
-                <h1 className="text-3xl font-extrabold text-red-600 mb-8">Email Verification</h1>
-                <p className="text-base text-red-600 mb-8">Verifying your email, please wait...</p>
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-red-600 mb-6 sm:mb-8">Email Verification</h1>
+                <p className="text-sm sm:text-base text-red-600 mb-6 sm:mb-8">Verifying your email, please wait...</p>
                 {loading && <p className="text-blue-500 text-center">Verifying...</p>}
             </div>
         </motion.div>
